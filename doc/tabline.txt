@@ -1,0 +1,134 @@
+*vem-tabline.txt* Plugin to display your buffers and tabs in the tabline.
+
+                      Vem Tabline by Andrés Sopeña
+
+==============================================================================
+CONTENTS                                                           *vem-tabline*
+
+        Description ........................... |vem-tabline-description|
+        Using windows ......................... |vem-tabline-windows|
+        Buffer order .......................... |vem-tabline-buffer-order|
+        Colors ................................ |vem-tabline-colors|
+        Settings .............................. |vem-tabline-settings|
+        Source ................................ |vem-tabline-source|
+
+==============================================================================
+DESCRIPTION                                            *vem-tabline-description*
+
+Vem Tabline is a lightweight plugin that uses Vim's native tabline to display
+your tabs and listed buffers at the top of the screen. Buffers are shown to
+the left using their names and tabs are numbered and shown to the right. Eg:
+>
+    | buffer1 | buffer2* | buffer3 |                             | 1 | 2 | 3 |
+<
+Modified buffers are marked with '*' and identical buffer names are appended
+the name of the first different directory names in their path:
+>
+    | foo | bar@dir1 | bar@dir2 |                                | 1 | 2 | 3 |
+<
+You can use the normal Vim commands to manage your buffers and tabs and the
+tabline will be updated accordingly.
+
+Note: Vem Tabline is a component of a bigger Vim configuration setup named Vem
+-still in the works-. Hence the plugin name. In any case, Vem Tabline can be
+used totally independently from the Vem project.
+
+==============================================================================
+USING WINDOWS                                              *vem-tabline-windows*
+
+Tabs in Vim are used to arrange your windows in different layouts. Buffers are
+shared across all tabs and you can have different visualization arrangements
+in each tab.
+
+Vem Tabline tries to remain as faithful to this idea as much as possible and
+sets the contents of the tabline accordingly:
+
+    * If there's only one window in the tab, all buffers are shown in the
+      tabline.
+
+    * If there's more than one window in the tab, only the displayed buffers
+      are listed.
+
+For example, if you have 3 buffers: `buffer1`, `buffer2`, `buffer3` and the
+tab has two windows showing the first 2 then you will see:
+>
+    | buffer1 | buffer2 | +1 more                                | 1 | 2 | 3 |
+>
+However, if there's only one window you'll see the three of them.
+
+==============================================================================
+BUFFER ORDER                                          *vem-tabline-buffer-order*
+
+Vem Tabline allows you to change the order in which buffers are shown in each
+tab. To do so, use the following <Plug> mappings:
+
+    Move selected buffer to the left:  `<Plug>vem_tabline_move_buffer_left-`
+    Move selected buffer to the right: `<Plug>vem_tabline_move_buffer_right-`
+
+Vim doesn't support ordering buffers natively so if you use `:bnext` and
+`:bprev`, they will not follow the order of buffers in the tabline if you have
+modified it. To avoid this problem you can use the following mappings:
+
+    Select previous buffer in tabline: `<Plug>vem_tabline_prev_buffer-`
+    Select next buffer in tabline:     `<Plug>vem_tabline_next_buffer-`
+
+For example you could set your mappings like:
+>
+    nmap <leader>h <Plug>vem_tabline_move_buffer_left-
+    nmap <leader>l <Plug>vem_tabline_move_buffer_right-
+    nmap <leader>p <Plug>vem_tabline_prev_buffer-
+    nmap <leader>n <Plug>vem_tabline_next_buffer-
+<
+==============================================================================
+COLORS                                                      *vem-tabline-colors*
+
+Vem Tabline uses the default colors of your color scheme for rendering the
+tabline. However you may change them using the following highlighting groups:
+
+    Highlighting Group        Default        Meaning~
+    *VemTablineSelected*        |TabLineSel|     Selected buffer
+    *VemTablineNormal*          |TabLine|        Non selected buffer
+    *VemTablineLocation*        |TabLine|        Directory name (when present)
+    *VemTablineSeparator*       |TabLineFill|    +X more text
+    *VemTablineTabSelected*     |TabLineSel|     Selected tab
+    *VemTablineTabNormal*       |TabLineFill|    Non selected tab
+
+For example, this sets the selected buffer background to blue in the gui
+version of Vim:
+>
+    highlight VemTablineSelected guifg=White guibg=DarkBlue gui=bold
+<
+==============================================================================
+SETTINGS                                                  *vem-tabline-settings*
+
+You can set these variables to configure Vem Tabline in your |vimrc| file:
+
+*g:vem_tabline_show*                boolean (default: 1)
+
+    The value of this option specifies how the tabline will be shown:
+
+        0: never shown
+        1: shown when there's more than one tab or buffer open
+        2: always shown
+
+*g:vem_tabline_location_symbol*     string (default: @)
+
+    Symbol to use to separate a buffer name from the directory name (eg.
+    `buffername@directory`). Only shown in buffers with identical names.
+
+*g:vem_tabline_left_arrow*          string (default: < in terminal, ◀ in gui)
+
+    Symbol to use when there are more buffers to the left of the tabline than
+    the ones that fit in it.
+
+*g:vem_tabline_right_arrow*          string (default: > in terminal, ▶ in gui)
+
+    Symbol to use when there are more buffers to the right of the tabline than
+    the ones that fit in it.
+
+==============================================================================
+SOURCE                                                      *vem-tabline-source*
+
+https://github.com/pacha/vem-tabline
+
+vim:tw=78:et:ft=help:norl:
