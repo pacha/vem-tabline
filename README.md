@@ -7,7 +7,7 @@ top of your screen using Vim's tabline.
 
 ![Screenshot](doc/screenshots/one-window.png)
 
-In Vim:
+Vim uses a bit of an unusual vocabulary:
 
 * Buffers are your documents/files.
 
@@ -15,17 +15,20 @@ In Vim:
   layouts.
 
 With Vem Tabline you can see both, your open files and your different
-workspaces, and which ones are currently selected.
+workspaces, and highlights which ones are currently selected.
 
 In Vim you can't confine buffers to certain tabs. All tabs can access all
 buffers at all times. You only use tabs to define window arrangements over
 those buffers. Vem Tabline shows buffers according to that idea. When you have
 a single window open in a tab, you see all the open buffers. However, when you
-have multiple windows open in a tab you only see the names of the buffers
-displayed in those windows. This way you can see the relevant buffers when you
-have complex layouts.
+have a more complex layout with multiple windows open in a tab you only see the
+names of the buffers that are displayed in those windows. This way you can see
+which buffers are more relevant in a per-tab basis.
 
-You can use Vem Tabline right away without aditional configuration. Just
+Installation
+------------
+
+You can use Vem Tabline right away without additional configuration. Just
 install the plugin and start using it. You only need to configure it if you
 want to manually order the buffers in the tabline (explained below).
 
