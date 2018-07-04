@@ -111,6 +111,11 @@ You can set these variables to configure Vem Tabline in your |vimrc| file:
         1: shown when there's more than one tab or buffer open
         2: always shown
 
+    Vim option `showtabline` takes these same values but only checks the
+    number of tabs and ignores the number of buffers when it is set to 1.
+    Please, use `g:vem_tabline_show` instead of `showtabline` since the plugin
+    will override the value of the option to fix this behavior.
+
 *g:vem_tabline_location_symbol*     string (default: @)
 
     Symbol to use to separate a buffer name from the directory name (eg.

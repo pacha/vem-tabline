@@ -43,8 +43,8 @@ Tabline because none of them had the features I needed:
 
 * Support for displaying both buffers and tabs simultaneously.
 
-* Support for Vim's native commands (no re-mappings necessary -there are
-  available key mappings but they are optional).
+* Support for Vim's native commands (no re-mappings necessary - there are
+  key mappings offered by the plugin but they are optional).
 
 * Possibility to reorder the buffers in the tabline.
 
@@ -65,15 +65,15 @@ Moving Buffers in Tabline
 Vem Tabline allows you to change the order in which buffers are shown in each
 tab. To do so, use the following `<Plug>` mappings:
 
-    Move selected buffer to the left:  <Plug>vem_tabline_move_buffer_left-
-    Move selected buffer to the right: <Plug>vem_tabline_move_buffer_right-
+`<Plug>vem_tabline_move_buffer_left-`: Move selected buffer to the left
+`<Plug>vem_tabline_move_buffer_right-`: Move selected buffer to the right
 
 Vim doesn't support ordering buffers natively so if you use `:bnext` and
 `:bprev`, they will not follow the order of buffers in the tabline if you have
 modified it. To avoid this problem you can use the following mappings:
 
-    Select previous buffer in tabline: <Plug>vem_tabline_prev_buffer-
-    Select next buffer in tabline:     <Plug>vem_tabline_next_buffer-
+`<Plug>vem_tabline_prev_buffer-`: Select previous buffer in tabline
+`<Plug>vem_tabline_next_buffer-`: Select next buffer in tabline
 
 For example you could set your mappings like:
 ```
@@ -111,4 +111,47 @@ VemTablineLocation    | TabLine     | Directory name (when present)
 VemTablineSeparator   | TabLineFill | +X more text
 VemTablineTabSelected | TabLineSel  | Selected tab
 VemTablineTabNormal   | TabLineFill | Non selected tab
+
+Configuration
+-------------
+
+The plugin is pretty simple and doesn't require manual
+configuration. However, there are some parameters that you may want to change
+by setting the following variables:
+
+`g:vem_tabline_show`: boolean (default: 1)
+
+    The value of this option specifies how the tabline will be shown:
+
+    0: never shown
+    1: shown when there's more than one tab or buffer open
+    2: always shown
+
+    Note: Vim option `showtabline` is used for the same purpose and takes these
+    same values, however it only checks the number of tabs and ignores the
+    number of buffers when it is set to 1. Please, use `g:vem_tabline_show`
+    instead of `showtabline` since the plugin will override the value of the
+    option to fix this behavior.
+
+`g:vem_tabline_location_symbol`: string (default: @)
+
+    Symbol to use to separate a buffer name from the directory name (eg.
+    `buffername@directory`). Only shown in buffers with identical names.
+
+`g:vem_tabline_left_arrow`: string (default: < in terminal, ◀ in gui)
+
+    Symbol to use when there are more buffers to the left of the tabline than
+    the ones that fit in it.
+
+`g:vem_tabline_right_arrow`: string (default: > in terminal, ▶ in gui)
+
+    Symbol to use when there are more buffers to the right of the tabline than
+    the ones that fit in it.
+
+If you don't have set it yet, probably you may want to specify:
+```
+set hidden
+```
+in your `vimrc` file in case you want to be able to switch buffers without
+having to save their changes before.
 
