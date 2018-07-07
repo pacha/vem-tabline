@@ -112,6 +112,7 @@ Highlighting Group    | Default     | Meaning
 ----------------------|-------------|------------------------------
 VemTablineSelected    | TabLineSel  | Selected buffer
 VemTablineNormal      | TabLine     | Non selected buffer
+VemTablineShown       | TabLine     | Buffer displayed in window
 VemTablineLocation    | TabLine     | Directory name (when present)
 VemTablineSeparator   | TabLineFill | +X more text
 VemTablineTabSelected | TabLineSel  | Selected tab
