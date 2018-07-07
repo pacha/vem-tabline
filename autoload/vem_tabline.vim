@@ -72,19 +72,20 @@ function! vem_tabline#tabline.update(...)
     let buffers_in_tab = tabpagebuflist()
     let only_listed = 'buflisted(v:val) && "quickfix" !=? getbufvar(v:val, "&buftype")'
     let unique = 'index(buffers_in_tab, v:val, v:key+1)==-1'
-    let tabpage_buffers = filter(buffers_in_tab, only_listed . ' && ' . unique)
+    let self.tabpage_buffers = filter(buffers_in_tab, only_listed . ' && ' . unique)
 
-    " windows in tabline
-    let condition = 'index(tabpage_buffers, winbufnr(v:val)) != -1'
-    let self.tabline_windows = filter(range(1, winnr('$')), condition)
+    " windows in tabpage
+    let condition = 'index(self.tabpage_buffers, winbufnr(v:val)) != -1'
+    let self.tabpage_windows = filter(range(1, winnr('$')), condition)
 
     " check if multiwindow mode
-    let self.is_multiwindow = len(self.tabline_windows) > 1
+    let self.is_multiwindow = len(self.tabpage_windows) > 1
+    let self.multiwindow_mode = self.is_multiwindow && g:vem_tabline_multiwindow_mode
 
     " list of buffers to display and extra buffers (non-displayed ones)
-    if self.is_multiwindow
-        let self.tabline_buffers = tabpage_buffers
-        let self.extra_buffer_count = len(listed_buffers) - len(tabpage_buffers)
+    if self.multiwindow_mode
+        let self.tabline_buffers = self.tabpage_buffers
+        let self.extra_buffer_count = len(listed_buffers) - len(self.tabpage_buffers)
     else
         let self.tabline_buffers = s:sort_buffers_in_tabpage(listed_buffers)
         let self.extra_buffer_count = 0
@@ -152,7 +153,7 @@ endfunction
 function! vem_tabline#tabline.get_next_window(direction)
     " get window position
     let winnum = winnr()
-    let winnum_pos = index(self.tabline_windows, winnum)
+    let winnum_pos = index(self.tabpage_windows, winnum)
 
     " check if current window is not in tabline
     if winnum_pos == -1
@@ -161,10 +162,10 @@ function! vem_tabline#tabline.get_next_window(direction)
 
     " get next tabline buffer window
     let inc = a:direction == 'right' ? 1 : -1
-    let next_pos = (winnum_pos + inc) % len(self.tabline_windows)
+    let next_pos = (winnum_pos + inc) % len(self.tabpage_windows)
 
     " get buffer number
-    let next_winnum = self.tabline_windows[next_pos]
+    let next_winnum = self.tabpage_windows[next_pos]
     return next_winnum
 endfunction
 
@@ -175,7 +176,7 @@ function! vem_tabline#tabline.select_buffer(direction)
 
     " if multiwindow: go to new window
     " if single window: show new buffer in same window
-    if self.is_multiwindow
+    if self.multiwindow_mode
         call self.select_next_window(a:direction)
     else
         call self.select_next_buffer(a:direction)
@@ -187,8 +188,8 @@ function! vem_tabline#tabline.select_next_window(direction)
     " get the number of the buffer to select
     let next_winnum = self.get_next_window(a:direction)
     if next_winnum == 0
-        if len(self.tabline_windows) > 0
-            let next_winnum = self.tabline_windows[0]
+        if len(self.tabpage_windows) > 0
+            let next_winnum = self.tabpage_windows[0]
         else
             return
         endif
@@ -201,8 +202,8 @@ function! vem_tabline#tabline.select_next_buffer(direction)
     let next_bufnum = self.get_next_buffer(a:direction)
     if next_bufnum == 0
         if winnr('$') > 1
-            if len(self.tabline_windows) > 0
-                let next_winnum = self.tabline_windows[0]
+            if len(self.tabpage_windows) > 0
+                let next_winnum = self.tabpage_windows[0]
                 exec next_winnum . 'wincmd w'
             endif
             return
@@ -226,7 +227,7 @@ function! vem_tabline#tabline.move_buffer(direction)
     endif
 
     " if multiwindow: rotate, if single window: swap
-    if self.is_multiwindow
+    if self.multiwindow_mode
         call self.swap_window_position(a:direction)
     else
         call self.swap_buffer_position(a:direction)

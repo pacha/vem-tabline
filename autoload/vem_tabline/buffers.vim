@@ -88,6 +88,9 @@ function! vem_tabline#buffers#section.update(buffer_nrs)
         " buffer has modifications that haven't been saved
         let buffer_item.modified = getbufvar(buffer_nr, '&modified')
 
+        " buffer is shown in a window of the current tabpage
+        let buffer_item.shown = bufwinnr(buffer_nr) != -1
+
         " last buffer in tabline (computed later)
         let buffer_item.last_position = 0
 
@@ -278,7 +281,9 @@ function! vem_tabline#buffers#section.render(max_length)
         " add prefix
         if buffer_item.current
             let prefix = '%#VemTablineSelected# '
-        elseif prefix == '%#VemTablineSelected# '
+        elseif buffer_item.shown
+            let prefix = '%#VemTablineShown# '
+        elseif prefix == '%#VemTablineSelected# ' || prefix == '%#VemTablineShown# '
             let prefix = ' %#VemTablineNormal#'
         else
             let prefix = ' '

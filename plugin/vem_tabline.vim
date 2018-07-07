@@ -19,6 +19,7 @@ scriptencoding utf-8
 
 " Configuration variables
 let g:vem_tabline_show = get(g:, 'vem_tabline_show', 1)
+let g:vem_tabline_multiwindow_mode = get(g:, 'vem_tabline_multiwindow_mode', 1)
 let g:vem_tabline_location_symbol = get(g:, 'vem_tabline_location_symbol', '@')
 if has('gui_running')
     let g:vem_tabline_left_arrow = get(g:, 'vem_tabline_left_arrow', '◀')
@@ -29,8 +30,9 @@ else
 endif
 
 " Syntax highlighting
-highlight default link VemTablineNormal  TabLine
+highlight default link VemTablineNormal TabLine
 highlight default link VemTablineSelected TabLineSel
+highlight default link VemTablineShown TabLine
 highlight default link VemTablineLocation TabLine
 highlight default link VemTablineSeparator TabLineFill
 highlight default link VemTablineTabNormal TabLineFill

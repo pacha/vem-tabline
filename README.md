@@ -8,7 +8,9 @@ top of your screen using Vim's tabline.
 ![Screenshot](doc/screenshots/one-window.png)
 
 Vem tabline shows your tabs as numbered workspaces at the right of the top line
-of the screen and the list of open buffers to the left:
+of the screen and the list of open buffers to the left.
+
+By deafult:
 
 * In tabs with only one window all buffers are listed.
 
@@ -17,7 +19,9 @@ of the screen and the list of open buffers to the left:
 
 This allows you to have a cleaner list of buffers depending on the tab that is
 active and goes well with Vim's philosophy of using tabs as workspaces to
-arrange windows in different configurations.
+arrange windows in different configurations. If you want to always see all
+buffers independently of the number of windows set the
+`g:vem_tabline_multiwindow_mode` to 0 as explained in (#configuration).
 
 **Note**: Vem Tabline is one component of a larger Vim configuration project
 named Vem, so the name is not a typo :) You can use Vem Tabline completely
@@ -115,9 +119,9 @@ VemTablineTabNormal   | TabLineFill | Non selected tab
 Configuration
 -------------
 
-The plugin is pretty simple and doesn't require manual
-configuration. However, there are some parameters that you may want to change
-by setting the following variables:
+The plugin is pretty simple and doesn't require manual configuration. However,
+there are some parameters that you may want to change. The most important ones
+are:
 
 `g:vem_tabline_show`: boolean (default: 1)
 
@@ -133,22 +137,20 @@ by setting the following variables:
     instead of `showtabline` since the plugin will override the value of the
     option to fix this behavior.
 
-`g:vem_tabline_location_symbol`: string (default: @)
+`g:vem_tabline_multiwindow_mode`: boolean (default: 1)
 
-    Symbol to use to separate a buffer name from the directory name (eg.
-    `buffername@directory`). Only shown in buffers with identical names.
+    When this mode is active, for layouts of multiple windows in the tabpage,
+    only the buffers that are displayed in those windows are listed in the
+    tabline. That only applies to multi-window layouts, if there is only one
+    window in the tabpage, all buffers are listed.
 
-`g:vem_tabline_left_arrow`: string (default: < in terminal, ◀ in gui)
+    If this mode is set to 0, all buffers are listed in the tabline regardless
+    of the window layout.
 
-    Symbol to use when there are more buffers to the left of the tabline than
-    the ones that fit in it.
+There are other minor configuration options available in the Vim [help
+file](/doc/tabline.txt) provided with the plugin.
 
-`g:vem_tabline_right_arrow`: string (default: > in terminal, ▶ in gui)
-
-    Symbol to use when there are more buffers to the right of the tabline than
-    the ones that fit in it.
-
-If you don't have set it yet, probably you may want to specify:
+Note: If you don't have set it yet, probably you may want to specify:
 ```
 set hidden
 ```
