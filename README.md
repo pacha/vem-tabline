@@ -21,7 +21,8 @@ This allows you to have a cleaner list of buffers depending on the tab that is
 active and goes well with Vim's philosophy of using tabs as workspaces to
 arrange windows in different configurations. If you want to always see all
 buffers independently of the number of windows set the
-`g:vem_tabline_multiwindow_mode` to 0 as explained in (#configuration).
+`g:vem_tabline_multiwindow_mode` to 0 as explained in
+[Configuration](#configuration).
 
 **Note**: Vem Tabline is one component of a larger Vim configuration project
 named Vem, so the name is not a typo :) You can use Vem Tabline completely
