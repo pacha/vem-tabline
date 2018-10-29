@@ -82,10 +82,10 @@ modified it. To avoid this problem you can use the following mappings:
 
 For example you could set your mappings like:
 ```
-nmap <leader>h <Plug>vem_tabline_move_buffer_left-
-nmap <leader>l <Plug>vem_tabline_move_buffer_right-
-nmap <leader>p <Plug>vem_tabline_prev_buffer-
-nmap <leader>n <Plug>vem_tabline_next_buffer-
+nmap <leader>h <Plug>vem_move_buffer_left-
+nmap <leader>l <Plug>vem_move_buffer_right-
+nmap <leader>p <Plug>vem_prev_buffer-
+nmap <leader>n <Plug>vem_next_buffer-
 ```
 
 You may also want to map the numbered keys to quickly access your tabs. To do
