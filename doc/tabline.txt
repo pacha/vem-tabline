@@ -94,10 +94,23 @@ tabline. However you may change them using the following highlighting groups:
     *VemTablineTabSelected*     |TabLineSel|     Selected tab
     *VemTablineTabNormal*       |TabLineFill|    Non selected tab
 
-For example, this sets the selected buffer background to blue in the gui
-version of Vim:
+For example, to set the selected buffer background to blue in the gui
+version of Vim, you could do something like:
 >
     highlight VemTablineSelected guifg=White guibg=DarkBlue gui=bold
+<
+And this is a complete example for a grey colored tabline:
+>
+    highlight TabLine                    cterm=none ctermfg=255 ctermbg=240 guifg=#242424 guibg=#cdcdcd gui=none
+    highlight TabLineSel                 cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
+    highlight TabLineFill                cterm=none ctermfg=255 ctermbg=240 guifg=#e6e3d8 guibg=#404040 gui=italic
+    highlight VemTablineNormal           cterm=none ctermfg=255 ctermbg=240 guifg=#242424 guibg=#cdcdcd gui=none
+    highlight VemTablineSelected         cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
+    highlight VemTablineSeparator        cterm=none ctermfg=246 ctermbg=240 guifg=#e6e3d8 guibg=#404040 gui=italic
+    highlight VemTablineLocation         cterm=none ctermfg=255 ctermbg=240 guifg=#666666 guibg=#cdcdcd gui=none
+    highlight VemTablineLocationSelected cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
+    highlight VemTablineTabNormal        cterm=none ctermfg=255 ctermbg=240 guifg=#242424 guibg=#cdcdcd gui=none
+    highlight VemTablineTabSelected      cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
 <
 ==============================================================================
 SETTINGS                                                  *vem-tabline-settings*

@@ -5,7 +5,7 @@ Vem Tabline
 Vem Tabline is a lightweight Vim plugin to display your tabs and buffers at the
 top of your screen using Vim's tabline.
 
-![Screenshot](doc/screenshots/one-window.png)
+![Vem Tabline - Screenshot](doc/screenshots/one-window.png)
 
 Vem tabline shows your tabs as numbered workspaces at the right of the top line
 of the screen and the list of open buffers to the left.
@@ -28,6 +28,13 @@ buffers independently of the number of windows set the
 named Vem, so the name is not a typo :) You can use Vem Tabline completely
 independently from the parent project though. (Vem is still in the works but
 will be released under the MIT license when all its parts are completed.)
+Other components of the project are:
+
+* [Vem Statusline](https://github.com/pacha/vem-statusline): A light
+  statusline for Vim.
+
+* [Vem Dark](https://github.com/pacha/vem-dark): A dark color scheme for
+  Vim based on Wombat.
 
 Installation
 ------------
@@ -117,6 +124,24 @@ VemTablineLocation    | TabLine     | Directory name (when present)
 VemTablineSeparator   | TabLineFill | +X more text
 VemTablineTabSelected | TabLineSel  | Selected tab
 VemTablineTabNormal   | TabLineFill | Non selected tab
+
+For example, with the following code you can configure your tabline colors using
+different shades of grey:
+
+![Vem Tabline - Color scheme example](doc/screenshots/color-scheme-example.png)
+
+```
+highlight TabLine                    cterm=none ctermfg=255 ctermbg=240 guifg=#242424 guibg=#cdcdcd gui=none
+highlight TabLineSel                 cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
+highlight TabLineFill                cterm=none ctermfg=255 ctermbg=240 guifg=#e6e3d8 guibg=#404040 gui=italic
+highlight VemTablineNormal           cterm=none ctermfg=255 ctermbg=240 guifg=#242424 guibg=#cdcdcd gui=none
+highlight VemTablineSelected         cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
+highlight VemTablineSeparator        cterm=none ctermfg=246 ctermbg=240 guifg=#e6e3d8 guibg=#404040 gui=italic
+highlight VemTablineLocation         cterm=none ctermfg=255 ctermbg=240 guifg=#666666 guibg=#cdcdcd gui=none
+highlight VemTablineLocationSelected cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
+highlight VemTablineTabNormal        cterm=none ctermfg=255 ctermbg=240 guifg=#242424 guibg=#cdcdcd gui=none
+highlight VemTablineTabSelected      cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
+```
 
 Configuration
 -------------
