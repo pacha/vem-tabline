@@ -33,7 +33,7 @@ function! vem_tabline#buffers#buffer_item.render(...)
     let crop_direction = get(a:, 4, 'none')
 
     " discriminator
-    if self.discriminator != '' && max_length == 0
+    if self.discriminator != '' && crop_direction == 'none'
         let discriminator = discriminator_hl . self.discriminator . end_discriminator_hl
     else
         let discriminator = self.discriminator
@@ -303,8 +303,14 @@ function! vem_tabline#buffers#section.render(max_length)
             let overflow = viewport_info.right_overflow
         " current buffer
         elseif buffer_item.current
-            let discriminator_hl = ''
-            let end_hl = ''
+            let discriminator_hl = '%#VemTablineLocationSelected#'
+            let end_hl = '%#VemTablineSelected#'
+            let crop_direction = 'none'
+            let overflow = 0
+        " shown buffer
+        elseif buffer_item.shown
+            let discriminator_hl = '%#VemTablineLocationShown#'
+            let end_hl = '%#VemTablineShown#'
             let crop_direction = 'none'
             let overflow = 0
         " all other buffers

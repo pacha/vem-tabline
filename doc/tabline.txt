@@ -85,14 +85,16 @@ COLORS                                                      *vem-tabline-colors*
 Vem Tabline uses the default colors of your color scheme for rendering the
 tabline. However you may change them using the following highlighting groups:
 
-    Highlighting Group        Default        Meaning~
-    *VemTablineSelected*        |TabLineSel|     Selected buffer
-    *VemTablineNormal*          |TabLine|        Non selected buffer
-    *VemTablineShown*           |TabLine|        Buffer shown in window
-    *VemTablineLocation*        |TabLine|        Directory name (when present)
-    *VemTablineSeparator*       |TabLineFill|    +X more text
-    *VemTablineTabSelected*     |TabLineSel|     Selected tab
-    *VemTablineTabNormal*       |TabLineFill|    Non selected tab
+    Highlighting Group          Default        Meaning~
+    *VemTablineNormal*            |TabLine|        Non-selected buffers
+    *VemTablineLocation*          |TabLine|        Directory name (when present)
+    *VemTablineSelected*          |TabLineSel|     Currently selected buffer
+    *VemTablineLocationSelected*  |TabLineSel|     Directory name (when present)
+    *VemTablineShown*             |TabLine|        Buffer displayed in window
+    *VemTablineLocationShown*     |TabLine|        Directory name (when present)
+    *VemTablineSeparator*         |TabLineFill|    '+X more' text
+    *VemTablineTabSelected*       |TabLineSel|     Selected tab
+    *VemTablineTabNormal*         |TabLineFill|    Non selected tab
 
 For example, to set the selected buffer background to blue in the gui
 version of Vim, you could do something like:
@@ -105,10 +107,12 @@ And this is a complete example for a grey colored tabline:
     highlight TabLineSel                 cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
     highlight TabLineFill                cterm=none ctermfg=255 ctermbg=240 guifg=#e6e3d8 guibg=#404040 gui=italic
     highlight VemTablineNormal           cterm=none ctermfg=255 ctermbg=240 guifg=#242424 guibg=#cdcdcd gui=none
-    highlight VemTablineSelected         cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
-    highlight VemTablineSeparator        cterm=none ctermfg=246 ctermbg=240 guifg=#e6e3d8 guibg=#404040 gui=italic
     highlight VemTablineLocation         cterm=none ctermfg=255 ctermbg=240 guifg=#666666 guibg=#cdcdcd gui=none
-    highlight VemTablineLocationSelected cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
+    highlight VemTablineSelected         cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
+    highlight VemTablineLocationSelected cterm=bold ctermfg=235 ctermbg=255 guifg=#666666 guibg=#ffffff gui=bold
+    highlight VemTablineShown            cterm=none ctermfg=255 ctermbg=240 guifg=#242424 guibg=#cdcdcd gui=none
+    highlight VemTablineLocationShown    cterm=none ctermfg=255 ctermbg=240 guifg=#666666 guibg=#cdcdcd gui=none
+    highlight VemTablineSeparator        cterm=none ctermfg=246 ctermbg=240 guifg=#e6e3d8 guibg=#404040 gui=italic
     highlight VemTablineTabNormal        cterm=none ctermfg=255 ctermbg=240 guifg=#242424 guibg=#cdcdcd gui=none
     highlight VemTablineTabSelected      cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
 <

@@ -31,9 +31,11 @@ endif
 
 " Syntax highlighting
 highlight default link VemTablineNormal TabLine
-highlight default link VemTablineSelected TabLineSel
-highlight default link VemTablineShown TabLine
 highlight default link VemTablineLocation TabLine
+highlight default link VemTablineSelected TabLineSel
+highlight default link VemTablineLocationSelected TabLineSel
+highlight default link VemTablineShown TabLine
+highlight default link VemTablineLocationShown TabLine
 highlight default link VemTablineSeparator TabLineFill
 highlight default link VemTablineTabNormal TabLineFill
 highlight default link VemTablineTabSelected TabLineSel
