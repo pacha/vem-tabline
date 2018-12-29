@@ -109,6 +109,40 @@ nnoremap <leader>8 :8tabnext<CR>
 nnoremap <leader>9 :9tabnext<CR>
 ```
 
+Deleting Buffers
+----------------
+
+If you reorder the buffers in the tabline and then you delete one of them, Vim
+will choose a new buffer to display instead. This will usually be the next
+buffer in Vim's jump list and not necessarily the next one in the tabline. If
+you delete several of them in a row, you don't really know which buffer will be
+selected in the tabline and the resulting effect looks a bit random.
+
+If you want to have the next buffer in the tabline to be selected when you
+delete the current one, you can add something like this to your `vimrc`:
+```
+function! DeleteCurrentBuffer() abort
+    let current_buffer = bufnr('%')
+    let next_buffer = vem_tabline#tabline.get_replacement_buffer()
+    if next_buffer != 0
+        exec next_buffer . 'buffer'
+    endif
+    try
+        exec 'confirm ' . current_buffer . 'bdelete'
+    catch /E516:/
+       " If you cancel the operation, go back to original buffer
+        exec current_buffer . 'buffer'
+    endtry
+endfunction
+nmap <leader>x :call DeleteCurrentBuffer()<CR>
+```
+With this, you can press `<leader>x` (typically `\x`), and the current buffer
+will be deleted, and the next one in the tabline selected. If the current
+buffer has unsaved changes, you'll be prompted to confirm.
+
+Of course, you can adapt the snippet to your needs (like using `bwipeout`
+instead of `bdelete`) or choose a different key mapping.
+
 Color Scheme
 ------------
 

@@ -125,6 +125,29 @@ function! vem_tabline#tabline.render()
     return self.cached_tabline
 endfunction
 
+" Get the buffer to be used if current one were to be deleted.
+" The buffer is selected according to the order of buffers in the tabline
+" (usually the one to the right, unless it is the last one, then the one to
+" the left is returned).
+" If current buffer is not in the list return 0
+function! vem_tabline#tabline.get_replacement_buffer()
+    " get buffer position
+    let bufnum = bufnr('%')
+    let bufnum_pos = index(self.tabline_buffers, bufnum)
+
+    " check if current buffer is not in the tabline
+    if bufnum_pos == -1
+        return 0
+    endif
+
+    " get replacement buffer position
+    let next_pos = bufnum_pos + 1 < len(self.tabline_buffers) ? bufnum_pos + 1 : bufnum_pos - 1
+
+    " get replacement buffer number
+    let next_buf = self.tabline_buffers[next_pos]
+    return next_buf
+endfunction
+
 " Get next/prev buffer in list (according to the stored sorting)
 " 'direction' is 'left' or 'right' and the return value is the buffer number
 " if current buffer is not in the list return 0
