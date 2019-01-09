@@ -124,14 +124,13 @@ delete the current one, you can add something like this to your `vimrc`:
 function! DeleteCurrentBuffer() abort
     let current_buffer = bufnr('%')
     let next_buffer = vem_tabline#tabline.get_replacement_buffer()
-    if next_buffer != 0
-        exec next_buffer . 'buffer'
-    endif
     try
         exec 'confirm ' . current_buffer . 'bdelete'
+        if next_buffer != 0
+            exec next_buffer . 'buffer'
+        endif
     catch /E516:/
-       " If you cancel the operation, go back to original buffer
-        exec current_buffer . 'buffer'
+       " If the operation is cancelled, do nothing
     endtry
 endfunction
 nmap <leader>x :call DeleteCurrentBuffer()<CR>
