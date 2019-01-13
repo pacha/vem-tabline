@@ -59,16 +59,16 @@ endfunction
 " Mappings
 
 " select previous buffer
-nmap <silent> <Plug>vem_prev_buffer- :call vem_tabline#tabline.select_buffer('left')<CR>
+map <silent> <Plug>vem_prev_buffer- :<C-u>call vem_tabline#tabline.select_buffer('left')<CR>
 
 " select next buffer
-nmap <silent> <Plug>vem_next_buffer- :call vem_tabline#tabline.select_buffer('right')<CR>
+map <silent> <Plug>vem_next_buffer- :<C-u>call vem_tabline#tabline.select_buffer('right')<CR>
 
 " move buffer to the left
-nmap <silent> <Plug>vem_move_buffer_left- :call vem_tabline#tabline.move_buffer('left')<CR>
+map <silent> <Plug>vem_move_buffer_left- :<C-u>call vem_tabline#tabline.move_buffer('left')<CR>
 
 " move buffer to the right
-nmap <silent> <Plug>vem_move_buffer_right- :call vem_tabline#tabline.move_buffer('right')<CR>
+map <silent> <Plug>vem_move_buffer_right- :<C-u>call vem_tabline#tabline.move_buffer('right')<CR>
 
 " Autocommands
 augroup VemTabLine
