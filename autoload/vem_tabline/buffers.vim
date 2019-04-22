@@ -31,6 +31,7 @@ function! vem_tabline#buffers#buffer_item.render(...)
     let end_discriminator_hl = get(a:, 2, '')
     let max_length = get(a:, 3, 0)
     let crop_direction = get(a:, 4, 'none')
+    let buffernr = get(a:, 5, 1)
 
     " discriminator
     if self.discriminator != '' && crop_direction == 'none'
@@ -40,7 +41,8 @@ function! vem_tabline#buffers#buffer_item.render(...)
     endif
 
     " build label
-    let label = ' ' . self.name . discriminator . self.flags . ' '
+    let clickable = has('tablineat') ? '%' . buffernr . '@GotoBuffer@' : ''
+    let label = ' ' . clickable . self.name . discriminator . self.flags . ' '
 
     " crop label
     if crop_direction == 'left'
@@ -50,6 +52,10 @@ function! vem_tabline#buffers#buffer_item.render(...)
     endif
 
     return label
+endfunction
+
+function! GotoBuffer(minwid, clicks, btn, modifiers) abort
+  execute 'buffer ' . a:minwid
 endfunction
 
 function! vem_tabline#buffers#section.update(buffer_nrs)
@@ -321,7 +327,7 @@ function! vem_tabline#buffers#section.render(max_length)
             let overflow = 0
         endif
 
-        let label = buffer_item.render(discriminator_hl, end_hl, overflow, crop_direction)
+        let label = buffer_item.render(discriminator_hl, end_hl, overflow, crop_direction, buffer_item.nr)
         let section .= prefix . label
     endfor
 
