@@ -76,7 +76,8 @@ function! vem_tabline#tabline.update(...)
 
     " windows in tabpage
     let condition = 'index(self.tabpage_buffers, winbufnr(v:val)) != -1'
-    let self.tabpage_windows = filter(range(1, winnr('$')), condition)
+    let self.total_window_num = winnr('$')
+    let self.tabpage_windows = filter(range(1, self.total_window_num), condition)
 
     " check if multiwindow mode
     let self.is_multiwindow = len(self.tabpage_windows) > 1
@@ -93,6 +94,14 @@ function! vem_tabline#tabline.update(...)
 
     let self.cached_tabline = self.get_tabline()
 
+endfunction
+
+" Some changes in the window layout (eg. <C-w>o) don't trigger autocommand events.
+" This should be called when you need to ensure that the window layout haven't changed.
+function! vem_tabline#tabline.update_if_needed()
+    if self.total_window_num != winnr('$')
+        call self.update()
+    endif
 endfunction
 
 " Create tabline string
@@ -199,6 +208,7 @@ function! vem_tabline#tabline.select_buffer(direction)
 
     " if multiwindow: go to new window
     " if single window: show new buffer in same window
+    call self.update_if_needed()
     if self.multiwindow_mode
         call self.select_next_window(a:direction)
     else
@@ -250,6 +260,7 @@ function! vem_tabline#tabline.move_buffer(direction)
     endif
 
     " if multiwindow: rotate, if single window: swap
+    call self.update_if_needed()
     if self.multiwindow_mode
         call self.swap_window_position(a:direction)
     else
