@@ -49,7 +49,16 @@ function! vem_tabline#buffers#buffer_item.render(...)
         let label = label[:max_length - 1]
     endif
 
+    " clickable area (only Neovim for now)
+    if has('tablineat')
+        let label = '%' . self.nr . '@vem_tabline#buffers#goto_buffer@' . label . '%X'
+    endif
+
     return label
+endfunction
+
+function! vem_tabline#buffers#goto_buffer(minwid, clicks, btn, modifiers) abort
+    execute 'buffer ' . a:minwid
 endfunction
 
 function! vem_tabline#buffers#section.update(buffer_nrs)
