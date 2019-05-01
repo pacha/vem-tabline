@@ -14,7 +14,7 @@
 
 " Due to a bug in Vim dictionary functions don't trigger script autoload
 " This is just a workaround to load the files
-function! vem_tabline#Init()
+function! vem_tabline#Init() abort
     call g:vem_tabline#buffers#Init()
     call g:vem_tabline#separator#Init()
     call g:vem_tabline#tabpages#Init()
@@ -29,7 +29,7 @@ let vem_tabline#tabline.extra_buffer_count = 0
 let vem_tabline#tabline.cached_tabline = ''
 
 " return only buffers that aren't unlisted or quickfix ones
-function! s:get_buffer_list(...)
+function! s:get_buffer_list(...) abort
     " get params
     let deleted_buffer_nr = get(a:, 1, 0)
 
@@ -44,7 +44,7 @@ endfunction
 
 " keep the sort in which buffers are displayed stored in tab and use it to
 " sort buffers every time
-function! s:sort_buffers_in_tabpage(buffer_nrs)
+function! s:sort_buffers_in_tabpage(buffer_nrs) abort
     " create variable in tabpage
     if !exists('t:vem_tabline_buffers')
         let t:vem_tabline_buffers = []
@@ -61,7 +61,7 @@ function! s:sort_buffers_in_tabpage(buffer_nrs)
 endfunction
 
 " update state of tabline according to current buffers/windows/tabpages
-function! vem_tabline#tabline.update(...)
+function! vem_tabline#tabline.update(...) abort
 
     let deleted_buffer_nr = get(a:, 1, 0)
 
@@ -98,14 +98,14 @@ endfunction
 
 " Some changes in the window layout (eg. <C-w>o) don't trigger autocommand events.
 " This should be called when you need to ensure that the window layout haven't changed.
-function! vem_tabline#tabline.update_if_needed()
+function! vem_tabline#tabline.update_if_needed() abort
     if self.total_window_num != winnr('$')
         call self.update()
     endif
 endfunction
 
 " Create tabline string
-function! vem_tabline#tabline.get_tabline()
+function! vem_tabline#tabline.get_tabline() abort
 
     " tabpages
     call g:vem_tabline#tabpages#section.update()
@@ -130,7 +130,7 @@ function! vem_tabline#tabline.get_tabline()
 endfunction
 
 " Return cached tabline
-function! vem_tabline#tabline.render()
+function! vem_tabline#tabline.render() abort
     return self.cached_tabline
 endfunction
 
@@ -139,7 +139,7 @@ endfunction
 " (usually the one to the right, unless it is the last one, then the one to
 " the left is returned).
 " If current buffer is not in the list return 0
-function! vem_tabline#tabline.get_replacement_buffer()
+function! vem_tabline#tabline.get_replacement_buffer() abort
     " get buffer position
     let bufnum = bufnr('%')
     let bufnum_pos = index(self.tabline_buffers, bufnum)
@@ -160,7 +160,7 @@ endfunction
 " Get next/prev buffer in list (according to the stored sorting)
 " 'direction' is 'left' or 'right' and the return value is the buffer number
 " if current buffer is not in the list return 0
-function! vem_tabline#tabline.get_next_buffer(direction)
+function! vem_tabline#tabline.get_next_buffer(direction) abort
     " get buffer position
     let bufnum = bufnr('%')
     let bufnum_pos = index(self.tabline_buffers, bufnum)
@@ -182,7 +182,7 @@ endfunction
 " Get next/prev window in tab that contains a buffer of the tabline
 " 'direction' is 'left' or 'right' and the return value is the window number
 " if current window doesn't contain a tabline buffer return 0
-function! vem_tabline#tabline.get_next_window(direction)
+function! vem_tabline#tabline.get_next_window(direction) abort
     " get window position
     let winnum = winnr()
     let winnum_pos = index(self.tabpage_windows, winnum)
@@ -204,7 +204,7 @@ endfunction
 " Select next/prev buffer in tabline
 " If the current buffer is in the tabline, it selects the prev or next one
 " Otherwise, it selects one of the buffers in the tabline
-function! vem_tabline#tabline.select_buffer(direction)
+function! vem_tabline#tabline.select_buffer(direction) abort
 
     " if multiwindow: go to new window
     " if single window: show new buffer in same window
@@ -217,7 +217,7 @@ function! vem_tabline#tabline.select_buffer(direction)
 endfunction
 
 " Select buffer in multi-window mode
-function! vem_tabline#tabline.select_next_window(direction)
+function! vem_tabline#tabline.select_next_window(direction) abort
     " get the number of the buffer to select
     let next_winnum = self.get_next_window(a:direction)
     if next_winnum == 0
@@ -231,7 +231,7 @@ function! vem_tabline#tabline.select_next_window(direction)
 endfunction
 
 " Select buffer in single-window mode
-function! vem_tabline#tabline.select_next_buffer(direction)
+function! vem_tabline#tabline.select_next_buffer(direction) abort
     let next_bufnum = self.get_next_buffer(a:direction)
     if next_bufnum == 0
         if winnr('$') > 1
@@ -250,7 +250,7 @@ function! vem_tabline#tabline.select_next_buffer(direction)
 endfunction
 
 " Move current buffer to left/right in the tabline
-function! vem_tabline#tabline.move_buffer(direction)
+function! vem_tabline#tabline.move_buffer(direction) abort
 
     " check that the buffer is in tabline
     let bufnum = bufnr('%')
@@ -268,7 +268,7 @@ function! vem_tabline#tabline.move_buffer(direction)
     endif
 endfunction
 
-function! vem_tabline#tabline.swap_window_position(direction)
+function! vem_tabline#tabline.swap_window_position(direction) abort
 
     " get the number of the buffer to swap possition with
     let next_winnum = self.get_next_window(a:direction)
@@ -284,7 +284,7 @@ function! vem_tabline#tabline.swap_window_position(direction)
 endfunction
 
 " Move current buffer to left/right in the tabline
-function! vem_tabline#tabline.swap_buffer_position(direction)
+function! vem_tabline#tabline.swap_buffer_position(direction) abort
 
     " get buffer position
     let sorted_buffers = t:vem_tabline_buffers
@@ -334,7 +334,7 @@ function! vem_tabline#tabline.swap_buffer_position(direction)
 endfunction
 
 " Determine if it is necessary to show the tabline
-function! vem_tabline#tabline.refresh(...)
+function! vem_tabline#tabline.refresh(...) abort
     let deleted_buffer_nr = get(a:, 1, 0)
     call self.update(deleted_buffer_nr)
 

@@ -47,7 +47,7 @@ call vem_tabline#Init()
 " Only call tabline.refresh() if the modified status of the buffer changes
 " This function is needed to optimize performance
 " TextChanged and TextChangedI are called too frequently to redraw every time
-function! s:check_buffer_changes()
+function! s:check_buffer_changes() abort
     let bufnum = bufnr('%')
     let old_modified_flag = getbufvar(bufnum, "vem_tabline_mod_opt")
     if old_modified_flag != &modified

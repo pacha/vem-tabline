@@ -2,7 +2,7 @@
 
 " Due to a bug in Vim dictionary functions don't trigger script autoload
 " This is just a workaround to load the files
-function! vem_tabline#buffers#Init()
+function! vem_tabline#buffers#Init() abort
     return 1
 endfunction
 
@@ -19,13 +19,13 @@ let vem_tabline#buffers#section.anchor_direction = 'right'
 let vem_tabline#buffers#buffer_item = {}
 
 " get the length of a single buffer label
-function! vem_tabline#buffers#buffer_item.get_length()
+function! vem_tabline#buffers#buffer_item.get_length() abort
     let margin_length = 2
     return len(self.name) + len(self.discriminator) + len(self.flags) + margin_length
 endfunction
 
 " render a single buffer label
-function! vem_tabline#buffers#buffer_item.render(...)
+function! vem_tabline#buffers#buffer_item.render(...) abort
     " parameters
     let discriminator_hl = get(a:, 1, '')
     let end_discriminator_hl = get(a:, 2, '')
@@ -61,7 +61,7 @@ function! vem_tabline#buffers#goto_buffer(minwid, clicks, btn, modifiers) abort
     execute 'buffer ' . a:minwid
 endfunction
 
-function! vem_tabline#buffers#section.update(buffer_nrs)
+function! vem_tabline#buffers#section.update(buffer_nrs) abort
 
     " data about the buffers to show in the tabline
     let self.buffer_items = []
@@ -115,7 +115,7 @@ function! vem_tabline#buffers#section.update(buffer_nrs)
 endfunction
 
 " Calculate the length in characters of the section
-function! vem_tabline#buffers#section.get_length()
+function! vem_tabline#buffers#section.get_length() abort
 
     " length is 0 if there are no buffers
     if len(self.buffer_items) == 0
@@ -138,7 +138,7 @@ endfunction
 " together with how many chars of that last one fit (overflow)
 " The result has the form: [start_index, end_index, overflow]
 " An overflow of 0 means that the last buffer fits entirely
-function! s:get_viewport_range(label_lengths, max_length, from_index, direction)
+function! s:get_viewport_range(label_lengths, max_length, from_index, direction) abort
 
     " set traversal direction
     if a:direction == 'right'
@@ -171,7 +171,7 @@ function! s:get_viewport_range(label_lengths, max_length, from_index, direction)
     return [start_index, end_index, overflow]
 endfunction
 
-function! s:get_viewport_info(buffer_items, max_length, anchor, anchor_direction)
+function! s:get_viewport_info(buffer_items, max_length, anchor, anchor_direction) abort
 
     " get label sizes, total size and index of selected (current) buffer
     let label_lengths = []
@@ -257,7 +257,7 @@ function! s:get_viewport_info(buffer_items, max_length, anchor, anchor_direction
 endfunction
 
 " Render the list of buffers
-function! vem_tabline#buffers#section.render(max_length)
+function! vem_tabline#buffers#section.render(max_length) abort
 
     " if there are no buffers there's nothing to show
     if len(self.buffer_items) == 0
@@ -345,7 +345,7 @@ function! vem_tabline#buffers#section.render(max_length)
     return section
 endfunction
 
-function! s:generate_labels(buffer_items)
+function! s:generate_labels(buffer_items) abort
 
     " iterate through buffers
     let buffer_items_count = len(a:buffer_items)
@@ -398,7 +398,7 @@ endfunction
 " [a, b, c], [a, b, c] -> 2
 " [a, b, c], [a, b, c, e, f] -> 2
 " [a, b, c, e, f], [a, b, c] -> 2
-function! s:find_first_non_match(list_a, list_b)
+function! s:find_first_non_match(list_a, list_b) abort
 
     let len_list_a = len(a:list_a)
     let len_list_b = len(a:list_b)
