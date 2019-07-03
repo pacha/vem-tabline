@@ -3,17 +3,11 @@
 " Maintainer: Andrés Sopeña <asopena@ehmm.org>
 " Licence: The MIT License (MIT)
 
-" Sentinel to prevent double execution
-if exists('g:loaded_vem_tabline')
+" Sentinel to prevent double execution and ensure a modern version of Vim
+if exists('g:loaded_vem_tabline') || v:version < 700
     finish
 endif
 let g:loaded_vem_tabline = 1
-
-" Sentinel to guarantee a modern version of Vim
-if v:version < 700
-    echoerr 'Vim 7 is required for vem-tabline (this is %d.%d)'
-    finish
-endif
 
 scriptencoding utf-8
 
@@ -73,7 +67,7 @@ map <silent> <Plug>vem_move_buffer_right- :<C-u>call vem_tabline#tabline.move_bu
 " Autocommands
 augroup VemTabLine
     autocmd!
-    autocmd VimEnter,TabNew,TabClosed,TabEnter,WinEnter * call vem_tabline#tabline.refresh()
+    autocmd VimEnter,TabEnter,WinEnter * call vem_tabline#tabline.refresh()
     autocmd BufAdd,BufEnter,BufFilePost * call vem_tabline#tabline.refresh()
     autocmd VimResized,CursorHold * call vem_tabline#tabline.refresh()
     autocmd BufDelete * call vem_tabline#tabline.refresh(str2nr(expand('<abuf>')))
