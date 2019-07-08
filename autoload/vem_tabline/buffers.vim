@@ -21,7 +21,7 @@ let vem_tabline#buffers#buffer_item = {}
 " get the length of a single buffer label
 function! vem_tabline#buffers#buffer_item.get_length() abort
     let margin_length = 2
-    return len(self.name) + len(self.discriminator) + len(self.flags) + margin_length
+    return len(self.nr) + 1 + len(self.name) + len(self.discriminator) + len(self.flags) + margin_length
 endfunction
 
 " render a single buffer label
@@ -40,7 +40,7 @@ function! vem_tabline#buffers#buffer_item.render(...) abort
     endif
 
     " build label
-    let label = ' ' . self.name . discriminator . self.flags . ' '
+    let label = ' ' . self.nr . ':' . self.name . discriminator . self.flags . ' '
 
     " crop label
     if crop_direction == 'left'
