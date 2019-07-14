@@ -168,6 +168,11 @@ You can set these variables to configure Vem Tabline in your |vimrc| file:
     Please, use `g:vem_tabline_show` instead of `showtabline` since the plugin
     will override the value of the option to fix this behavior.
 
+*g:vem_tabline_show_bufnr*          boolean (default: 0)
+
+    The value of this option specifies if the label of the buffer will contain
+    the buffer's number.
+
 *g:vem_tabline_multiwindow_mode*    boolean (default: 1)
 
     When this mode is active, for layouts of multiple windows in the tabpage,
