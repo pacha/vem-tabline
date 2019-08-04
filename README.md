@@ -10,7 +10,7 @@ top of your screen using Vim's tabline.
 Vem tabline shows your tabs as numbered workspaces at the right of the top line
 of the screen and the list of open buffers to the left.
 
-By deafult:
+By default:
 
 * In tabs with only one window all buffers are listed.
 
