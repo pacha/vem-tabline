@@ -24,11 +24,10 @@ buffers independently of the number of windows set the
 `g:vem_tabline_multiwindow_mode` to 0 as explained in
 [Configuration](#configuration).
 
-**Note**: Vem Tabline is one component of a larger Vim configuration project
-named Vem, so the name is not a typo :) You can use Vem Tabline completely
-independently from the parent project though. (Vem is still in the works but
-will be released under the MIT license when all its parts are completed.)
-Other components of the project are:
+**Note**: Vem Tabline is a component of a bigger Vim configuration setup named
+[Vem](https://www.vem-editor.org). Hence the plugin name. In any case, Vem
+Tabline can be used totally independently from the Vem project. Other
+components of Vem are:
 
 * [Vem Statusline](https://github.com/pacha/vem-statusline): A light
   statusline for Vim.
@@ -41,15 +40,13 @@ Installation
 
 You can use Vem Tabline right away without additional configuration. Just
 install the plugin and start using it. You only need to configure it if you
-want to manually order the buffers in the tabline (explained below).
+want to manually order the buffers in the tabline (explained below) or to show
+the buffer number together with its name.
 
-You need at least Vim 7 to use Vem Tabline.
+You need at least Vim 7.4 or NeoVim to use Vem Tabline.
 
 Features
 --------
-
-There are many Vim plugins to display the list of buffers. I created Vem
-Tabline because none of them had the features I needed:
 
 * Use of Vim's native tabline (no horizontal splits).
 
@@ -66,10 +63,11 @@ Tabline because none of them had the features I needed:
 * Lightweight, performant and just focused on providing the tabline
   functionality.
 
-The design of Vem Tabline is based on two very cool ones:
+There are many plugins to display the buffers in Vim. The design of Vem Tabline
+is based on two very cool ones:
 [vim-buftabline](https://github.com/ap/vim-buftabline) and
 [WinTabs](https://github.com/zefei/vim-wintabs). It doesn't share code with
-them but most ideas come from their original authors.
+them but many ideas come from their original authors.
 
 Moving Buffers in Tabline
 -------------------------
@@ -151,12 +149,16 @@ tabline. However you may change them using the following highlighting groups:
 Highlighting Group         | Default     | Meaning
 ---------------------------|-------------|----------------------------------------------------------------
 VemTablineNormal           | TabLine     | Non-selected buffers
-VemTablineLocation         | TabLine     | Directory name of a non-selected buffer (when present)
+VemTablineLocation         | TabLine     | Directory name of non-selected buffers (when present)
+VemTablineNumber           | TabLine     | Number of non-selected buffers (when present)
 VemTablineSelected         | TabLineSel  | Currently selected buffer
 VemTablineLocationSelected | TabLineSel  | Directory name of the currently selected buffer (when present)
+VemTablineNumberSelected   | TabLineSel  | Number of the currently selected buffer (when present)
 VemTablineShown            | TabLine     | Buffers currently being displayed in windows
 VemTablineLocationShown    | TabLine     | Directory name of the buffers being displayed (when present)
+VemTablineNumberShown      | TabLine     | Number of the buffers being displayed (when present)
 VemTablineSeparator        | TabLineFill | '+X more' text
+VemTablinePartialName      | TabLine     | Partially displayed buffer at the edge of the tabline
 VemTablineTabSelected      | TabLineSel  | Selected tab
 VemTablineTabNormal        | TabLineFill | Non selected tab
 
@@ -166,18 +168,19 @@ different shades of grey:
 ![Vem Tabline - Color scheme example](doc/screenshots/color-scheme-example.png)
 
 ```
-highlight TabLine                    cterm=none ctermfg=255 ctermbg=240 guifg=#242424 guibg=#cdcdcd gui=none
-highlight TabLineSel                 cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
-highlight TabLineFill                cterm=none ctermfg=255 ctermbg=240 guifg=#e6e3d8 guibg=#404040 gui=italic
-highlight VemTablineNormal           cterm=none ctermfg=255 ctermbg=240 guifg=#242424 guibg=#cdcdcd gui=none
-highlight VemTablineLocation         cterm=none ctermfg=255 ctermbg=240 guifg=#666666 guibg=#cdcdcd gui=none
-highlight VemTablineSelected         cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
-highlight VemTablineLocationSelected cterm=bold ctermfg=235 ctermbg=255 guifg=#666666 guibg=#ffffff gui=bold
-highlight VemTablineShown            cterm=none ctermfg=255 ctermbg=240 guifg=#242424 guibg=#cdcdcd gui=none
-highlight VemTablineLocationShown    cterm=none ctermfg=255 ctermbg=240 guifg=#666666 guibg=#cdcdcd gui=none
-highlight VemTablineSeparator        cterm=none ctermfg=246 ctermbg=240 guifg=#e6e3d8 guibg=#404040 gui=italic
-highlight VemTablineTabNormal        cterm=none ctermfg=255 ctermbg=240 guifg=#242424 guibg=#cdcdcd gui=none
-highlight VemTablineTabSelected      cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
+highlight VemTablineNormal           term=reverse cterm=none ctermfg=0   ctermbg=251 guifg=#242424 guibg=#cdcdcd gui=none
+highlight VemTablineLocation         term=reverse cterm=none ctermfg=239 ctermbg=251 guifg=#666666 guibg=#cdcdcd gui=none
+highlight VemTablineNumber           term=reverse cterm=none ctermfg=239 ctermbg=251 guifg=#666666 guibg=#cdcdcd gui=none
+highlight VemTablineSelected         term=bold    cterm=bold ctermfg=0   ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
+highlight VemTablineLocationSelected term=bold    cterm=none ctermfg=239 ctermbg=255 guifg=#666666 guibg=#ffffff gui=bold
+highlight VemTablineNumberSelected   term=bold    cterm=none ctermfg=239 ctermbg=255 guifg=#666666 guibg=#ffffff gui=bold
+highlight VemTablineShown            term=reverse cterm=none ctermfg=0   ctermbg=251 guifg=#242424 guibg=#cdcdcd gui=none
+highlight VemTablineLocationShown    term=reverse cterm=none ctermfg=0   ctermbg=251 guifg=#666666 guibg=#cdcdcd gui=none
+highlight VemTablineNumberShown      term=reverse cterm=none ctermfg=0   ctermbg=251 guifg=#666666 guibg=#cdcdcd gui=none
+highlight VemTablineSeparator        term=reverse cterm=none ctermfg=246 ctermbg=251 guifg=#888888 guibg=#cdcdcd gui=none
+highlight VemTablinePartialName      term=reverse cterm=none ctermfg=246 ctermbg=251 guifg=#888888 guibg=#cdcdcd gui=none
+highlight VemTablineTabNormal        term=reverse cterm=none ctermfg=0   ctermbg=251 guifg=#242424 guibg=#4a4a4a gui=none
+highlight VemTablineTabSelected      term=bold    cterm=bold ctermfg=0   ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
 ```
 
 Configuration
@@ -211,7 +214,18 @@ are:
     If this mode is set to 0, all buffers are listed in the tabline regardless
     of the window layout.
 
-There are other minor configuration options available in the Vim [help
+`g:vem_tabline_show_number`: string (default: 'none')
+
+    Show number in front of each buffer. The possible values are:
+
+        none: no number is shown
+        buffnr: Vim's buffer number is shown
+        index: displayed buffers are numbered sequentially starting from 1
+
+    Check the help file to get more information about how to switch to buffers
+    using the index number.
+
+For more configuration options, check the [Vim help
 file](/doc/tabline.txt) provided with the plugin.
 
 Note: If you don't have set it yet, probably you may want to specify:

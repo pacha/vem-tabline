@@ -121,7 +121,6 @@ function! vem_tabline#tabline.get_tabline() abort
     let screen_length = &columns
     let available_length = max([screen_length - tabpage_length - separator_length, 0])
     call g:vem_tabline#buffers#section.update(self.tabline_buffers)
-    let buffer_length = g:vem_tabline#buffers#section.get_length()
     let buffer_section = g:vem_tabline#buffers#section.render(available_length)
 
     " join result
@@ -143,6 +142,7 @@ function! vem_tabline#tabline.get_replacement_buffer() abort
     " get buffer position
     let bufnum = bufnr('%')
     let bufnum_pos = index(self.tabline_buffers, bufnum)
+    echomsg bufnum_pos
 
     " check if current buffer is not in the tabline
     if bufnum_pos == -1

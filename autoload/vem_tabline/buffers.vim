@@ -1,5 +1,17 @@
 " Vem Tabline: buffers
 
+" Use:
+"
+" Calling code first updates the list and then renders:
+"
+"   vem_tabline#buffers#section.update(buffernr_list)
+"   vem_tabline#buffers#section.render(available_space_in_chars)
+"
+" Definitions:
+"
+" label = tagnr + buffer_name + discriminator + flags
+"
+
 " Due to a bug in Vim dictionary functions don't trigger script autoload
 " This is just a workaround to load the files
 function! vem_tabline#buffers#Init() abort
@@ -15,65 +27,29 @@ let vem_tabline#buffers#section.buffer_items = []
 " the anchor direction: which side from the anchor draw the buffers
 let vem_tabline#buffers#section.anchor = 0
 let vem_tabline#buffers#section.anchor_direction = 'right'
+let vem_tabline#buffers#section.current_buffer_index = 0
 
-let vem_tabline#buffers#buffer_item = {}
+" viewport parameters
+let vem_tabline#buffers#section.start_index = 0
+let vem_tabline#buffers#section.end_index = 0
+let vem_tabline#buffers#section.left_arrow = 0
+let vem_tabline#buffers#section.right_arrow = 0
+let vem_tabline#buffers#section.left_padding = ''
+let vem_tabline#buffers#section.right_padding = ''
 
-" get the length of a single buffer label
-function! vem_tabline#buffers#buffer_item.get_length() abort
-    let margin_length = 2
-    if g:vem_tabline_show_bufnr
-        let nbr_length = len(self.nr) + 1
-    else
-        let nbr_length = 0
-    endif
-    return nbr_length + len(self.name) + len(self.discriminator) + len(self.flags) + margin_length
-endfunction
+" the tagnr is the number shown in front of the buffer (if enabled)
+" the tagnr_map is a dict that maps that number to the actual buffer number
+let vem_tabline#buffers#section.tagnr_map = {}
 
-" render a single buffer label
-function! vem_tabline#buffers#buffer_item.render(...) abort
-    " parameters
-    let discriminator_hl = get(a:, 1, '')
-    let end_discriminator_hl = get(a:, 2, '')
-    let max_length = get(a:, 3, 0)
-    let crop_direction = get(a:, 4, 'none')
-
-    " discriminator
-    if self.discriminator != '' && crop_direction == 'none'
-        let discriminator = discriminator_hl . self.discriminator . end_discriminator_hl
-    else
-        let discriminator = self.discriminator
-    endif
-
-    " buffer number
-    if g:vem_tabline_show_bufnr
-        let nbr_text = self.nr . ':'
-    else
-        let nbr_text = ''
-    endif
-
-    " build label
-    let label = ' ' . nbr_text . self.name . discriminator . self.flags . ' '
-
-    " crop label
-    if crop_direction == 'left'
-        let label = label[-max_length:]
-    elseif crop_direction == 'right'
-        let label = label[:max_length - 1]
-    endif
-
-    " clickable area (only Neovim for now)
-    if has('tablineat')
-        let label = '%' . self.nr . '@vem_tabline#buffers#goto_buffer@' . label . '%X'
-    endif
-
-    return label
-endfunction
-
-function! vem_tabline#buffers#goto_buffer(minwid, clicks, btn, modifiers) abort
-    execute 'buffer ' . a:minwid
-endfunction
-
+"
+" Update
+"
 function! vem_tabline#buffers#section.update(buffer_nrs) abort
+    call self.populate_buffers(a:buffer_nrs)
+    call self.generate_labels_without_tagnr()
+endfunction
+
+function! vem_tabline#buffers#section.populate_buffers(buffer_nrs) abort
 
     " data about the buffers to show in the tabline
     let self.buffer_items = []
@@ -98,7 +74,8 @@ function! vem_tabline#buffers#section.update(buffer_nrs) abort
         " index of the last element in path_part to be included in the label
         let buffer_item.path_index = 0
 
-        " label parts: <name><discriminator><flags>
+        " label parts: <tagnr><name><discriminator><flags>
+        let buffer_item.tagnr = ''
         let buffer_item.name = ''
         let buffer_item.discriminator = ''
         let buffer_item.flags = ''
@@ -121,248 +98,14 @@ function! vem_tabline#buffers#section.update(buffer_nrs) abort
     " update last position
     let self.buffer_items[-1].last_position = 1
 
-    " update buffer labels
-    call s:generate_labels(self.buffer_items)
-
 endfunction
 
-" Calculate the length in characters of the section
-function! vem_tabline#buffers#section.get_length() abort
-
-    " length is 0 if there are no buffers
-    if len(self.buffer_items) == 0
-        return 0
-    endif
-
-    " length of section is the sum of the length of buffer labels
-    let section_length = 0
-    for buffer_item in self.buffer_items
-        let section_length += buffer_item.get_length()
-    endfor
-
-    " one extra char between buffers (and at beginning and end)
-    let margin_length = len(self.buffer_items) + 1
-
-    return section_length + margin_length
-endfunction
-
-" Return the index range of buffers that fit in tabline
-" together with how many chars of that last one fit (overflow)
-" The result has the form: [start_index, end_index, overflow]
-" An overflow of 0 means that the last buffer fits entirely
-function! s:get_viewport_range(label_lengths, max_length, from_index, direction) abort
-
-    " set traversal direction
-    if a:direction == 'right'
-        let inc = 1
-        let last_index = len(a:label_lengths) - 1
-    elseif a:direction == 'left'
-        let inc = -1
-        let last_index = 0
-    endif
-
-    " get the end of the range and the overflow
-    let total_length = 0
-    let overflow = 0
-    for index in range(a:from_index, last_index, inc)
-        let length = a:label_lengths[index]
-        if total_length + length >= a:max_length
-            let overflow = a:max_length - total_length
-            break
-        endif
-        let total_length += length
-    endfor
-
-    if a:direction == 'right'
-        let start_index = a:from_index
-        let end_index = index
-    else
-        let start_index = index
-        let end_index = a:from_index
-    endif
-    return [start_index, end_index, overflow]
-endfunction
-
-function! s:get_viewport_info(buffer_items, max_length, anchor, anchor_direction) abort
-
-    " get label sizes, total size and index of selected (current) buffer
-    let label_lengths = []
-    let current_index = 0
-    let last_index = len(a:buffer_items) - 1
-
-    " total_length = label sizes + 1 space per label + 1 space at the end
-    " <space><label><space><label><space><label><space><label><space>
-    let total_length = 1
-    for index in range(0, last_index)
-
-        let buffer_item = a:buffer_items[index]
-
-        " sum the length of the buffer label + 1 space margin at left
-        call add(label_lengths, buffer_item.get_length() + 1)
-        let total_length += buffer_item.get_length() + 1
-
-        " save current index
-        if buffer_item.current
-            let current_index = index
-        endif
-    endfor
-
-    " if all buffers fit in the space, stop here
-    if total_length <= a:max_length
-        let viewport_info = {}
-        let viewport_info.start_index = 0
-        let viewport_info.end_index = last_index
-        let viewport_info.left_arrow = 0
-        let viewport_info.right_arrow = 0
-        let viewport_info.left_overflow = 0
-        let viewport_info.right_overflow = 0
-        let viewport_info.anchor = 0
-        let viewport_info.anchor_direction = 'right'
-        return viewport_info
-    endif
-
-    " check that the anchor is still valid
-    let anchor = a:anchor <= last_index ? a:anchor : current_index
-
-    " get tentative range
-    let direction = a:anchor_direction
-    if anchor == 0 || anchor == last_index
-        let max_length = a:max_length - 3
-    else
-        let max_length = a:max_length - 4
-    endif
-    let range_info = s:get_viewport_range(label_lengths, max_length, anchor, direction)
-    let [start_index, end_index, overflow] = range_info
-
-    " change range if selected buffer is outside the original one
-    let is_before = current_index < start_index
-    let is_after = current_index > end_index
-    let cropped_at_start = current_index == start_index && overflow != 0 && direction == 'left'
-    let cropped_at_end = current_index == end_index && overflow != 0 && direction == 'right'
-    if is_before || cropped_at_start
-        let direction = 'right'
-        let anchor = current_index
-        let max_length = anchor == 0 ? a:max_length - 3 : a:max_length - 4
-        let range_info = s:get_viewport_range(label_lengths, max_length, anchor, direction)
-        let [start_index, end_index, overflow] = range_info
-    elseif is_after || cropped_at_end
-        let direction = 'left'
-        let anchor = current_index
-        let max_length = anchor == last_index ? a:max_length - 3 : a:max_length - 4
-        let range_info = s:get_viewport_range(label_lengths, max_length, anchor, direction)
-        let [start_index, end_index, overflow] = range_info
-    endif
-
-    " return result
-    let left_overflow = direction == 'right' ? 0 : overflow
-    let right_overflow = direction == 'right' ? overflow : 0
-    let viewport_info = {}
-    let viewport_info.start_index = start_index
-    let viewport_info.end_index = end_index
-    let viewport_info.left_arrow = start_index != 0 || left_overflow != 0
-    let viewport_info.right_arrow = end_index != last_index || right_overflow != 0
-    let viewport_info.left_overflow = left_overflow
-    let viewport_info.right_overflow = right_overflow
-    let viewport_info.anchor = anchor
-    let viewport_info.anchor_direction = direction
-    return viewport_info
-endfunction
-
-" Render the list of buffers
-function! vem_tabline#buffers#section.render(max_length) abort
-
-    " if there are no buffers there's nothing to show
-    if len(self.buffer_items) == 0
-        return ''
-    endif
-
-    " get range of buffers to show
-    let anchor = self.anchor
-    let direction = self.anchor_direction
-    let viewport_info = s:get_viewport_info(self.buffer_items, a:max_length, anchor, direction)
-
-    " save new anchor
-    let self.anchor = viewport_info.anchor
-    let self.anchor_direction = viewport_info.anchor_direction
-
-    let initial = '%#VemTablineNormal#'
-    let prefix = ' '
-    let section = initial
-
-    " show left overflow arrow
-    if viewport_info.left_arrow
-        let section .= g:vem_tabline_left_arrow
-    endif
-
-    let start_index = viewport_info.start_index
-    let end_index = viewport_info.end_index
-    for buffer_index in range(start_index, end_index)
-        let buffer_item = self.buffer_items[buffer_index]
-
-        " add prefix
-        if buffer_item.current
-            let prefix = '%#VemTablineSelected# '
-        elseif buffer_item.shown
-            let prefix = '%#VemTablineShown# '
-        elseif prefix == '%#VemTablineSelected# ' || prefix == '%#VemTablineShown# '
-            let prefix = ' %#VemTablineNormal#'
-        else
-            let prefix = ' '
-        endif
-
-        " partial label to the left
-        if buffer_index == start_index && viewport_info.left_overflow != 0
-            let discriminator_hl = ''
-            let end_hl = ''
-            let crop_direction = 'left'
-            let overflow = viewport_info.left_overflow
-        " partial label to the right
-        elseif buffer_index == end_index && viewport_info.right_overflow != 0
-            let discriminator_hl = ''
-            let end_hl = ''
-            let crop_direction = 'right'
-            let overflow = viewport_info.right_overflow
-        " current buffer
-        elseif buffer_item.current
-            let discriminator_hl = '%#VemTablineLocationSelected#'
-            let end_hl = '%#VemTablineSelected#'
-            let crop_direction = 'none'
-            let overflow = 0
-        " shown buffer
-        elseif buffer_item.shown
-            let discriminator_hl = '%#VemTablineLocationShown#'
-            let end_hl = '%#VemTablineShown#'
-            let crop_direction = 'none'
-            let overflow = 0
-        " all other buffers
-        else
-            let discriminator_hl = '%#VemTablineLocation#'
-            let end_hl = '%#VemTablineNormal#'
-            let crop_direction = 'none'
-            let overflow = 0
-        endif
-
-        let label = buffer_item.render(discriminator_hl, end_hl, overflow, crop_direction)
-        let section .= prefix . label
-    endfor
-
-    " show right overflow arrow
-    if viewport_info.right_arrow
-        let suffix = ' %#VemTablineNormal#' . g:vem_tabline_right_arrow
-    else
-        let suffix = ' %#VemTablineNormal#'
-    endif
-
-    let section .= suffix
-    return section
-endfunction
-
-function! s:generate_labels(buffer_items) abort
+function! vem_tabline#buffers#section.generate_labels_without_tagnr() abort
 
     " iterate through buffers
-    let buffer_items_count = len(a:buffer_items)
+    let buffer_items_count = len(self.buffer_items)
     for buffer_index in range(buffer_items_count)
-        let buffer_item = a:buffer_items[buffer_index]
+        let buffer_item = self.buffer_items[buffer_index + 0]
         let path_parts_count = len(buffer_item.path_parts)
 
         " empty name
@@ -374,7 +117,7 @@ function! s:generate_labels(buffer_items) abort
         " set label index by comparing this buffer with next ones until a
         " unique label is generated
         if buffer_index != buffer_items_count - 1
-            for next_item in a:buffer_items[buffer_index + 1:]
+            for next_item in self.buffer_items[buffer_index + 1:]
                 let index = s:find_first_non_match(buffer_item.path_parts, next_item.path_parts)
                 let buffer_item.path_index = max([buffer_item.path_index, index])
                 let next_item.path_index = max([next_item.path_index, index])
@@ -391,12 +134,208 @@ function! s:generate_labels(buffer_items) abort
             let buffer_item.discriminator = g:vem_tabline_location_symbol . dirname
         endif
 
-        " get discriminator
+        " get flags
         if buffer_item.modified
             let buffer_item.flags = '*'
         endif
+
+        " update current buffer index
+        if buffer_item.current
+            let self.current_buffer_index = buffer_index
+        endif
     endfor
 
+endfunction
+
+"
+" Render the list of buffers
+"
+function! vem_tabline#buffers#section.render(max_length) abort
+
+    " do nothing if there are no buffers
+    if len(self.buffer_items) == 0
+        return ''
+    endif
+
+    " set viewport params
+    call self.set_viewport_params(a:max_length)
+    if self.current_buffer_index < self.start_index
+        let self.anchor = self.current_buffer_index
+        let self.anchor_direction = 'right'
+        call self.set_viewport_params(a:max_length)
+    elseif self.current_buffer_index > self.end_index
+        let self.anchor = self.current_buffer_index
+        let self.anchor_direction = 'left'
+        call self.set_viewport_params(a:max_length)
+    endif
+
+    " set tagnr for labels
+    if g:vem_tabline_show_number != 'none'
+        call self.set_tagnrs()
+    endif
+
+    return self.get_tabline()
+
+endfunction
+
+function! vem_tabline#buffers#section.set_viewport_params(max_length) abort
+
+    " check that the anchor is still valid
+    let last_index = len(self.buffer_items) - 1
+    if self.anchor > last_index
+        let self.anchor = last_index
+        let self.anchor_direction = 'left'
+    endif
+
+    " get range of indexes to iterate through
+    if self.anchor_direction == 'right'
+        let buffer_range = range(self.anchor, last_index)
+        let first_arrow = self.anchor > 0
+    else
+        let buffer_range = reverse(range(0, self.anchor))
+        let first_arrow = self.anchor < last_index
+    endif
+
+    " check how many buffers fit
+    let anti_anchor = self.anchor
+    let current_length = first_arrow ? 2 : 1  " account for the first arrow and right label margin
+    let index = 0
+    for buffer_index in buffer_range
+        let buffer_item = self.buffer_items[buffer_index]
+        let last_one = buffer_index == buffer_range[-1]
+
+        " get tagnr
+        let index += 1
+        let tagnr = buffer_item.get_tagnr(index)
+
+        " get label length + left label margin
+        let label_length = buffer_item.get_length(tagnr) + 1
+
+        " update current length and advance pointer to buffer
+        let remaining = a:max_length - current_length
+        if (!last_one && label_length < remaining) || (last_one && label_length <= remaining)
+            let current_length += label_length
+            let anti_anchor = buffer_index
+        else
+            break
+        endif
+    endfor
+
+    " get final numbers
+    if self.anchor_direction == 'right'
+        let self.start_index = self.anchor
+        let self.end_index = anti_anchor
+        let self.left_arrow = first_arrow
+        let self.right_arrow = anti_anchor < last_index
+        let current_length += self.right_arrow ? 1 : 0
+        let self.left_padding = 0
+        let self.right_padding = a:max_length - current_length
+    else
+        let self.start_index = anti_anchor
+        let self.end_index = self.anchor
+        let self.left_arrow = anti_anchor > 0
+        let self.right_arrow = first_arrow
+        let current_length += self.left_arrow ? 1 : 0
+        let self.left_padding = a:max_length - current_length
+        let self.right_padding = 0
+    endif
+
+endfunction
+
+function! vem_tabline#buffers#section.set_tagnrs() abort
+
+    let self.tagnr_map = {}
+    let buffer_range = range(self.start_index, self.end_index)
+    let index = 0
+    for buffer_index in buffer_range
+        let buffer_item = self.buffer_items[buffer_index]
+        let index += 1
+        call buffer_item.set_tagnr(index)
+        let self.tagnr_map[buffer_item.tagnr] = buffer_item.nr
+    endfor
+
+    " set tagnr for partial name
+    if self.end_index < len(self.buffer_items) - 1
+        let index += 1
+        call self.buffer_items[self.end_index + 1].set_tagnr(index)
+        let self.tagnr_map[buffer_item.tagnr] = buffer_item.nr
+    endif
+
+endfunction
+
+function! vem_tabline#buffers#section.get_tabline() abort
+
+    let section = '%#VemTablineNormal#'
+
+    " left arrow
+    if self.left_arrow
+        let section .= g:vem_tabline_left_arrow
+
+        " left padding
+        if self.left_padding
+            let section .= '%#VemTablinePartialName#' . self.get_left_padding() . '%#VemTablineNormal#'
+        endif
+    endif
+
+    " buffers
+    let buffer_range = range(self.start_index, self.end_index)
+    for buffer_index in buffer_range
+        let buffer_item = self.buffer_items[buffer_index]
+        let last_one = buffer_index == buffer_range[-1]
+
+        " label
+        if buffer_item.current
+            let section .= '%#VemTablineSelected# '
+            let section .= buffer_item.render('Selected')
+        elseif buffer_item.shown
+            let section .= ' %#VemTablineShown#'
+            let section .= buffer_item.render('Shown')
+        else
+            let section .= ' %#VemTablineNormal#'
+            let section .= buffer_item.render('')
+        endif
+
+        " last right label margin
+        if last_one
+            let section .= ' %#VemTablineNormal#'
+        endif
+    endfor
+
+    " right arrow
+    if self.right_arrow
+        " right padding
+        if self.right_padding
+            let section .= '%#VemTablinePartialName#' . self.get_right_padding() . '%#VemTablineNormal#'
+        endif
+
+        let section .= g:vem_tabline_right_arrow
+    endif
+
+    return section
+
+endfunction
+
+function! vem_tabline#buffers#section.get_left_padding() abort
+    try
+        let item = self.buffer_items[self.start_index - 1]
+        let label = item.get_label()
+        let padding = label[-self.left_padding:]
+        let padding = repeat('.', self.left_padding - len(padding)) . padding
+        return padding
+    catch //
+        return repeat('.', self.left_padding)
+    endtry
+endfunction
+
+function! vem_tabline#buffers#section.get_right_padding() abort
+    try
+        let item = self.buffer_items[self.end_index + 1]
+        let label = item.get_label()
+        let padding = label[0:self.right_padding - 1]
+        return padding
+    catch //
+        return repeat('.', self.right_padding)
+    endtry
 endfunction
 
 " Compare two lists and return the index of the fist element that is different
@@ -433,3 +372,64 @@ function! s:find_first_non_match(list_a, list_b) abort
 
 endfunction
 
+"
+" Buffer Item
+"
+
+let vem_tabline#buffers#buffer_item = {}
+
+" get the length of a single buffer label
+function! vem_tabline#buffers#buffer_item.get_length(tagnr) abort
+    let margin = 2
+    return len(a:tagnr) + len(self.name) + len(self.discriminator) + len(self.flags) + margin
+endfunction
+
+function! vem_tabline#buffers#buffer_item.get_label() abort
+    return ' ' . self.tagnr . self.name . self.discriminator . self.flags . ' '
+endfunction
+
+function! vem_tabline#buffers#buffer_item.get_tagnr(index) abort
+    if g:vem_tabline_show_number == 'none'
+        return ''
+    elseif g:vem_tabline_show_number == 'index'
+        return a:index . g:vem_tabline_number_symbol
+    elseif g:vem_tabline_show_number == 'bufnr'
+        return self.nr . g:vem_tabline_number_symbol
+    else
+        let msg = "VemTabline: invalid value for g:vem_tabline_show_number"
+        let msg .= " ('" . g:vem_tabline_show_number . "')"
+        throw msg
+    endif
+endfunction
+
+function! vem_tabline#buffers#buffer_item.set_tagnr(index) abort
+    let self.tagnr = self.get_tagnr(a:index)
+endfunction
+
+function! vem_tabline#buffers#goto_buffer(minwid, clicks, btn, modifiers) abort
+    execute 'buffer ' . a:minwid
+endfunction
+
+function! vem_tabline#buffers#buffer_item.render(modifier) abort
+    let label = ' '
+    if self.tagnr != ''
+        let label .= '%#VemTablineNumber' . a:modifier . '#'
+        let label .= self.tagnr
+        let label .= '%#VemTabline' . a:modifier . '#'
+    endif
+    let label .= self.name
+    if self.discriminator != ''
+        let label .= '%#VemTablineLocation' . a:modifier . '#'
+        let label .= self.discriminator
+        let label .= '%#VemTabline' . a:modifier . '#'
+    endif
+    let label .= self.flags
+    let label .= ' '
+
+    " Enable mouse clicking (only neovim for now)
+    if has('tablineat')
+        let label = '%' . self.nr . '@vem_tabline#buffers#goto_buffer@' . label . '%X'
+    endif
+
+    return label
+endfunction

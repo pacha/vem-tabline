@@ -8,6 +8,7 @@ CONTENTS                                                           *vem-tabline*
         Description ........................... |vem-tabline-description|
         Using windows ......................... |vem-tabline-windows|
         Buffer order .......................... |vem-tabline-buffer-order|
+        Selecting buffers ..................... |vem-tabline-selecting-buffers|
         Deleting buffers ...................... |vem-tabline-deleting-buffers|
         Colors ................................ |vem-tabline-colors|
         Settings .............................. |vem-tabline-settings|
@@ -31,8 +32,8 @@ You can use the normal Vim commands to manage your buffers and tabs and the
 tabline will be updated accordingly.
 
 Note: Vem Tabline is a component of a bigger Vim configuration setup named Vem
--still in the works-. Hence the plugin name. In any case, Vem Tabline can be
-used totally independently from the Vem project.
+(https://www.vem-editor.org). Hence the plugin name. In any case, Vem Tabline
+can be used totally independently from the Vem project.
 
 ==============================================================================
 USING WINDOWS                                              *vem-tabline-windows*
@@ -73,13 +74,67 @@ modified it. To avoid this problem you can use the following mappings:
     Select previous buffer in tabline: `<Plug>vem_prev_buffer-`
     Select next buffer in tabline:     `<Plug>vem_next_buffer-`
 
-For example you could set your mappings like:
+For example, you could set your mappings like:
 >
     nmap <leader>h <Plug>vem_move_buffer_left-
     nmap <leader>l <Plug>vem_move_buffer_right-
     nmap <leader>p <Plug>vem_prev_buffer-
     nmap <leader>n <Plug>vem_next_buffer-
 <
+==============================================================================
+SELECTING BUFFERS                                *vem-tabline-selecting-buffers*
+
+As shown in |vem-tabline-buffer-order|, you can use the mappings:
+>
+    <Plug>vem_prev_buffer-
+    <Plug>vem_next_buffer-
+<
+to select the the next or previous buffer according to the order in which they
+are displayed in the tabline.
+
+With the variable `g:vem_tabline_show_number`, you can also display a number
+next to the name of the buffer. If you set it to `'buffnr'`, the number of the
+buffer will be displayed:
+>
+    | 3:file1.txt | 12:file2.txt | +1 more                       | 1 | 2 | 3 |
+<
+And you can switch to any buffer, using the `:buffer` command:
+>
+    :b12
+
+If you set `g:vem_tabline_show_number` to `'index'`, then the displayed buffers
+will show a sequential number starting with `1`:
+>
+    | 1:file1.txt | 2:file2.txt | +1 more                        | 1 | 2 | 3 |
+>
+In that case, you can use that number to switch to the buffer using the
+provided command `VemTablineGo`:
+>
+    :VemTablineGo 2
+<
+Since the buffers are numered from 1 for the buffers that you see in the
+tabline, you can define mappings to quickly jump to them:
+>
+    nmap <leader>1 :VemTablineGo 1<CR>
+    nmap <leader>2 :VemTablineGo 2<CR>
+    nmap <leader>3 :VemTablineGo 3<CR>
+    nmap <leader>4 :VemTablineGo 4<CR>
+    nmap <leader>5 :VemTablineGo 5<CR>
+    nmap <leader>6 :VemTablineGo 6<CR>
+    nmap <leader>7 :VemTablineGo 7<CR>
+    nmap <leader>8 :VemTablineGo 8<CR>
+    nmap <leader>9 :VemTablineGo 9<CR>
+<
+The command `VemTablineGo` is a bit verbose on purpose so it doesn't conflict
+with commands that may already be defined in your Vim configuration. However,
+if you prefer something shorter, you can create your own commmand with:
+>
+    command! -nargs=1 Go call VemTablineGo("<args>")
+<
+This will define a `Go` command that behaves exactly like `VemTablineGo`. You
+can use any name of your liking here, but remember that Vim user commands must
+start with uppercase.
+
 ==============================================================================
 DELETING BUFFERS                                 *vem-tabline-deleting-bufffers*
 
@@ -122,11 +177,15 @@ tabline. However you may change them using the following highlighting groups:
     Highlighting Group          Default        Meaning~
     *VemTablineNormal*            |TabLine|        Non-selected buffers
     *VemTablineLocation*          |TabLine|        Directory name (when present)
+    *VemTablineNumber*            |TabLine|        Buffer number (when present)
     *VemTablineSelected*          |TabLineSel|     Currently selected buffer
     *VemTablineLocationSelected*  |TabLineSel|     Directory name (when present)
+    *VemTablineNumberSelected*    |TabLineSel|     Buffer number (when present)
     *VemTablineShown*             |TabLine|        Buffer displayed in window
     *VemTablineLocationShown*     |TabLine|        Directory name (when present)
+    *VemTablineNumberShown*       |TabLine|        Directory name (when present)
     *VemTablineSeparator*         |TabLineFill|    '+X more' text
+    *VemTablinePartialName*       |TabLine|        Partially shown buffer
     *VemTablineTabSelected*       |TabLineSel|     Selected tab
     *VemTablineTabNormal*         |TabLineFill|    Non selected tab
 
@@ -137,18 +196,19 @@ version of Vim, you could do something like:
 <
 And this is a complete example for a grey colored tabline:
 >
-    highlight TabLine                    cterm=none ctermfg=255 ctermbg=240 guifg=#242424 guibg=#cdcdcd gui=none
-    highlight TabLineSel                 cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
-    highlight TabLineFill                cterm=none ctermfg=255 ctermbg=240 guifg=#e6e3d8 guibg=#404040 gui=italic
-    highlight VemTablineNormal           cterm=none ctermfg=255 ctermbg=240 guifg=#242424 guibg=#cdcdcd gui=none
-    highlight VemTablineLocation         cterm=none ctermfg=255 ctermbg=240 guifg=#666666 guibg=#cdcdcd gui=none
-    highlight VemTablineSelected         cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
-    highlight VemTablineLocationSelected cterm=bold ctermfg=235 ctermbg=255 guifg=#666666 guibg=#ffffff gui=bold
-    highlight VemTablineShown            cterm=none ctermfg=255 ctermbg=240 guifg=#242424 guibg=#cdcdcd gui=none
-    highlight VemTablineLocationShown    cterm=none ctermfg=255 ctermbg=240 guifg=#666666 guibg=#cdcdcd gui=none
-    highlight VemTablineSeparator        cterm=none ctermfg=246 ctermbg=240 guifg=#e6e3d8 guibg=#404040 gui=italic
-    highlight VemTablineTabNormal        cterm=none ctermfg=255 ctermbg=240 guifg=#242424 guibg=#cdcdcd gui=none
-    highlight VemTablineTabSelected      cterm=bold ctermfg=235 ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
+    highlight VemTablineNormal           term=reverse cterm=none ctermfg=0   ctermbg=251 guifg=#242424 guibg=#cdcdcd gui=none
+    highlight VemTablineLocation         term=reverse cterm=none ctermfg=239 ctermbg=251 guifg=#666666 guibg=#cdcdcd gui=none
+    highlight VemTablineNumber           term=reverse cterm=none ctermfg=239 ctermbg=251 guifg=#666666 guibg=#cdcdcd gui=none
+    highlight VemTablineSelected         term=bold    cterm=bold ctermfg=0   ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
+    highlight VemTablineLocationSelected term=bold    cterm=none ctermfg=239 ctermbg=255 guifg=#666666 guibg=#ffffff gui=bold
+    highlight VemTablineNumberSelected   term=bold    cterm=none ctermfg=239 ctermbg=255 guifg=#666666 guibg=#ffffff gui=bold
+    highlight VemTablineShown            term=reverse cterm=none ctermfg=0   ctermbg=251 guifg=#242424 guibg=#cdcdcd gui=none
+    highlight VemTablineLocationShown    term=reverse cterm=none ctermfg=0   ctermbg=251 guifg=#666666 guibg=#cdcdcd gui=none
+    highlight VemTablineNumberShown      term=reverse cterm=none ctermfg=0   ctermbg=251 guifg=#666666 guibg=#cdcdcd gui=none
+    highlight VemTablineSeparator        term=reverse cterm=none ctermfg=246 ctermbg=251 guifg=#888888 guibg=#cdcdcd gui=none
+    highlight VemTablinePartialName      term=reverse cterm=none ctermfg=246 ctermbg=251 guifg=#888888 guibg=#cdcdcd gui=none
+    highlight VemTablineTabNormal        term=reverse cterm=none ctermfg=0   ctermbg=251 guifg=#242424 guibg=#4a4a4a gui=none
+    highlight VemTablineTabSelected      term=bold    cterm=bold ctermfg=0   ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
 <
 ==============================================================================
 SETTINGS                                                  *vem-tabline-settings*
@@ -168,11 +228,6 @@ You can set these variables to configure Vem Tabline in your |vimrc| file:
     Please, use `g:vem_tabline_show` instead of `showtabline` since the plugin
     will override the value of the option to fix this behavior.
 
-*g:vem_tabline_show_bufnr*          boolean (default: 0)
-
-    The value of this option specifies if the label of the buffer will contain
-    the buffer's number.
-
 *g:vem_tabline_multiwindow_mode*    boolean (default: 1)
 
     When this mode is active, for layouts of multiple windows in the tabpage,
@@ -182,6 +237,21 @@ You can set these variables to configure Vem Tabline in your |vimrc| file:
 
     If this mode is set to 0, all buffers are listed in the tabline regardless
     of the window layout.
+
+*g:vem_tabline_show_number*         string (default: none)
+
+    Show a number in front of each buffer. The possible values are:
+
+        none: no number is shown
+        buffnr: Vim's buffer number is shown
+        index: displayed buffers are numbered sequentially starting from 1
+
+    See |vem-tabline-selecting-buffers| for more info.
+
+*g:vem_tabline_number_symbol*     string (default: :)
+
+    Symbol to use to separate a buffer number from the buffer name (eg.
+    `1:my-file.txt`). Only shown if `g:vem_tabline_show_number` is not 'none'.
 
 *g:vem_tabline_location_symbol*     string (default: @)
 
