@@ -393,7 +393,7 @@ function! vem_tabline#buffers#buffer_item.get_tagnr(index) abort
         return ''
     elseif g:vem_tabline_show_number == 'index'
         return a:index . g:vem_tabline_number_symbol
-    elseif g:vem_tabline_show_number == 'bufnr'
+    elseif g:vem_tabline_show_number == 'buffnr'
         return self.nr . g:vem_tabline_number_symbol
     else
         let msg = "VemTabline: invalid value for g:vem_tabline_show_number"
