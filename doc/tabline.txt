@@ -6,10 +6,10 @@
 CONTENTS                                                           *vem-tabline*
 
         Description ........................... |vem-tabline-description|
-        Using windows ......................... |vem-tabline-windows|
         Buffer order .......................... |vem-tabline-buffer-order|
         Selecting buffers ..................... |vem-tabline-selecting-buffers|
         Deleting buffers ...................... |vem-tabline-deleting-buffers|
+        Multiwindow mode ...................... |vem-tabline-multiwindow-mode|
         Colors ................................ |vem-tabline-colors|
         Settings .............................. |vem-tabline-settings|
         Source ................................ |vem-tabline-source|
@@ -34,29 +34,6 @@ tabline will be updated accordingly.
 Note: Vem Tabline is a component of a bigger Vim configuration setup named Vem
 (https://www.vem-editor.org). Hence the plugin name. In any case, Vem Tabline
 can be used totally independently from the Vem project.
-
-==============================================================================
-USING WINDOWS                                              *vem-tabline-windows*
-
-Tabs in Vim are used to arrange your windows in different layouts. Buffers are
-shared across all tabs and you can have different visualization arrangements
-in each tab.
-
-Vem Tabline tries to remain as faithful to this idea as much as possible and
-sets the contents of the tabline accordingly:
-
-    * If there's only one window in the tab, all buffers are shown in the
-      tabline.
-
-    * If there's more than one window in the tab, only the displayed buffers
-      are listed.
-
-For example, if you have 3 buffers: `buffer1`, `buffer2`, `buffer3` and the
-tab has two windows showing the first 2 then you will see:
->
-    | buffer1 | buffer2 | +1 more                                | 1 | 2 | 3 |
->
-However, if there's only one window you'll see the three of them.
 
 ==============================================================================
 BUFFER ORDER                                          *vem-tabline-buffer-order*
@@ -169,6 +146,36 @@ Of course, you can adapt the snippet to your needs (like using `bwipeout`
 instead of `bdelete`) or choose a different key mapping.
 
 ==============================================================================
+MULTIWINDOW MODE                                  *vem-tabline-multiwindow-mode*
+
+In Vim, tabpages are used to arrange your windows in different layouts.
+Buffers are shared across all tabpages and you can have different
+visualization arrangements in each one.
+
+Vem Tabline offers a mode to show only relevant buffers depending on the
+layout of the current tabpage:
+
+  * If there's only one window in the tab, all buffers are shown in the
+    tabline.
+
+  * If there's more than one window in the tab, only the displayed buffers
+    are listed.
+
+For example, if you have 3 buffers: `buffer1`, `buffer2`, `buffer3` and the
+tab has two windows showing the first 2 then you will see:
+>
+    | buffer1 | buffer2 | +1 more                                | 1 | 2 | 3 |
+>
+However, if there's only one window you'll see the three of them.
+
+This allows you to have a cleaner list of buffers depending on the tab that is
+active and goes well with Vim's philosophy of using tabs as workspaces to
+arrange windows in different configurations.
+
+To enable this mode, set `g:vem_tabline_multiwindow_mode` to 1.
+
+
+==============================================================================
 COLORS                                                      *vem-tabline-colors*
 
 Vem Tabline uses the default colors of your color scheme for rendering the
@@ -228,7 +235,7 @@ You can set these variables to configure Vem Tabline in your |vimrc| file:
     Please, use `g:vem_tabline_show` instead of `showtabline` since the plugin
     will override the value of the option to fix this behavior.
 
-*g:vem_tabline_multiwindow_mode*    boolean (default: 1)
+*g:vem_tabline_multiwindow_mode*    boolean (default: 0)
 
     When this mode is active, for layouts of multiple windows in the tabpage,
     only the buffers that are displayed in those windows are listed in the

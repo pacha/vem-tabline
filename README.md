@@ -2,38 +2,48 @@
 Vem Tabline
 ===========
 
-Vem Tabline is a lightweight Vim plugin to display your tabs and buffers at the
-top of your screen using Vim's tabline.
+Vem Tabline is a lightweight Vim/Neovim plugin to display your tabs and buffers
+at the top of your screen using the editor's tabline.
 
 ![Vem Tabline - Screenshot](doc/screenshots/one-window.png)
 
 Vem tabline shows your tabs as numbered workspaces at the right of the top line
 of the screen and the list of open buffers to the left.
 
-By default:
+Its main features are:
 
-* In tabs with only one window all buffers are listed.
+* Use of Vim's native tabline (no horizontal splits).
 
-* In tabs with more than one window, only the buffers that are being displayed
-  are listed.
+* Support for displaying both buffers and tabs simultaneously.
 
-This allows you to have a cleaner list of buffers depending on the tab that is
-active and goes well with Vim's philosophy of using tabs as workspaces to
-arrange windows in different configurations. If you want to always see all
-buffers independently of the number of windows set the
-`g:vem_tabline_multiwindow_mode` to 0 as explained in
-[Configuration](#configuration).
+* Possibility of reordering the buffers in the tabline.
+
+* Support for Vim's native commands (no re-mappings necessary —there are
+  key mappings offered by the plugin but they are optional).
+
+* Support to show the buffer number together with its name.
+
+* Mouse support for clicking on both buffers (only Neovim) and tabpage numbers.
+
+* Lightweight, performant and just focused on providing the tabline
+  functionality.
+
+There are many plugins to display the buffers in Vim. The design of Vem Tabline
+is based on two very cool ones:
+[vim-buftabline](https://github.com/ap/vim-buftabline) and
+[WinTabs](https://github.com/zefei/vim-wintabs). It doesn't share code with
+them but some ideas come from their original authors.
 
 **Note**: Vem Tabline is a component of a bigger Vim configuration setup named
-[Vem](https://www.vem-editor.org). Hence the plugin name. In any case, Vem
-Tabline can be used totally independently from the Vem project. Other
-components of Vem are:
+[Vem](https://www.vem-editor.org). Hence the plugin name. Vem Tabline can be
+used independently from the Vem project though. Other components of Vem are:
 
 * [Vem Statusline](https://github.com/pacha/vem-statusline): A light
   statusline for Vim.
 
 * [Vem Dark](https://github.com/pacha/vem-dark): A dark color scheme for
   Vim based on Wombat.
+
 
 Installation
 ------------
@@ -43,31 +53,15 @@ install the plugin and start using it. You only need to configure it if you
 want to manually order the buffers in the tabline (explained below) or to show
 the buffer number together with its name.
 
-You need at least Vim 7.4 or NeoVim to use Vem Tabline.
+You need at least Vim 7.4 or Neovim to use Vem Tabline.
 
-Features
---------
+Note: If you don't have set it yet, probably you may want to specify:
+```
+set hidden
+```
+in your `vimrc` file so you can switch buffers without having to save their
+changes before.
 
-* Use of Vim's native tabline (no horizontal splits).
-
-* Support for displaying both buffers and tabs simultaneously.
-
-* Support for Vim's native commands (no re-mappings necessary - there are
-  key mappings offered by the plugin but they are optional).
-
-* Possibility to reorder the buffers in the tabline.
-
-* No fighting against Vim's native concepts (in particular no
-  scoping buffers to certain tabs).
-
-* Lightweight, performant and just focused on providing the tabline
-  functionality.
-
-There are many plugins to display the buffers in Vim. The design of Vem Tabline
-is based on two very cool ones:
-[vim-buftabline](https://github.com/ap/vim-buftabline) and
-[WinTabs](https://github.com/zefei/vim-wintabs). It doesn't share code with
-them but many ideas come from their original authors.
 
 Moving Buffers in Tabline
 -------------------------
@@ -140,6 +134,26 @@ buffer has unsaved changes, you'll be prompted to confirm.
 Of course, you can adapt the snippet to your needs (like using `bwipeout`
 instead of `bdelete`) or choose a different key mapping.
 
+
+Multiwindow mode
+----------------
+
+Vem Tabline offers a mode to show only relevant buffers depending on the layout
+of the current tabpage:
+
+* In tabs with only one window all buffers are listed.
+
+* In tabs with more than one window, only the buffers that are being displayed
+  are listed.
+
+This allows you to have a cleaner list of buffers depending on the tab that is
+active and goes well with Vim's philosophy of using tabs as workspaces to
+arrange windows in different configurations.
+
+To enable this mode, set `g:vem_tabline_multiwindow_mode` to 1 in your `vimrc`.
+See [Configuration](#configuration) for more information.
+
+
 Color Scheme
 ------------
 
@@ -204,7 +218,7 @@ are:
     instead of `showtabline` since the plugin will override the value of the
     option to fix this behavior.
 
-`g:vem_tabline_multiwindow_mode`: boolean (default: 1)
+`g:vem_tabline_multiwindow_mode`: boolean (default: 0)
 
     When this mode is active, for layouts of multiple windows in the tabpage,
     only the buffers that are displayed in those windows are listed in the
@@ -225,13 +239,6 @@ are:
     Check the help file to get more information about how to switch to buffers
     using the index number.
 
-For more configuration options, check the [Vim help
-file](/doc/tabline.txt) provided with the plugin.
-
-Note: If you don't have set it yet, probably you may want to specify:
-```
-set hidden
-```
-in your `vimrc` file in case you want to be able to switch buffers without
-having to save their changes before.
+For more configuration options, check the [Vim help file](/doc/tabline.txt)
+provided with the plugin.
 
