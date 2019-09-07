@@ -10,7 +10,8 @@ at the top of your screen using the editor's tabline.
 Vem tabline shows your tabs as numbered workspaces at the right of the top line
 of the screen and the list of open buffers to the left.
 
-Its main features are:
+Features
+--------
 
 * Use of Vim's native tabline (no horizontal splits).
 
@@ -28,11 +29,6 @@ Its main features are:
 * Lightweight, performant and just focused on providing the tabline
   functionality.
 
-There are many plugins to display the buffers in Vim. The design of Vem Tabline
-is based on two very cool ones:
-[vim-buftabline](https://github.com/ap/vim-buftabline) and
-[WinTabs](https://github.com/zefei/vim-wintabs). It doesn't share code with
-them but some ideas come from their original authors.
 
 **Note**: Vem Tabline is a component of a bigger Vim configuration setup named
 [Vem](https://www.vem-editor.org). Hence the plugin name. Vem Tabline can be
@@ -241,4 +237,13 @@ are:
 
 For more configuration options, check the [Vim help file](/doc/tabline.txt)
 provided with the plugin.
+
+Credits
+-------
+
+There are many plugins to display the buffers in Vim. The design of Vem Tabline
+is based on two very cool ones:
+[vim-buftabline](https://github.com/ap/vim-buftabline) and
+[WinTabs](https://github.com/zefei/vim-wintabs). It doesn't share code with
+them but many ideas come from their original authors.
 
