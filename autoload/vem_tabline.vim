@@ -142,7 +142,6 @@ function! vem_tabline#tabline.get_replacement_buffer() abort
     " get buffer position
     let bufnum = bufnr('%')
     let bufnum_pos = index(self.tabline_buffers, bufnum)
-    echomsg bufnum_pos
 
     " check if current buffer is not in the tabline
     if bufnum_pos == -1
