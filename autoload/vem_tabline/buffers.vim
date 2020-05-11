@@ -108,6 +108,11 @@ function! vem_tabline#buffers#section.generate_labels_without_tagnr() abort
         let buffer_item = self.buffer_items[buffer_index + 0]
         let path_parts_count = len(buffer_item.path_parts)
 
+        " update current buffer index
+        if buffer_item.current
+            let self.current_buffer_index = buffer_index
+        endif
+
         " empty name
         if path_parts_count == 0
             let buffer_item.name = '[No Name]'
@@ -137,11 +142,6 @@ function! vem_tabline#buffers#section.generate_labels_without_tagnr() abort
         " get flags
         if buffer_item.modified
             let buffer_item.flags = '*'
-        endif
-
-        " update current buffer index
-        if buffer_item.current
-            let self.current_buffer_index = buffer_index
         endif
     endfor
 
