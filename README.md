@@ -65,15 +65,15 @@ Moving Buffers in Tabline
 Vem Tabline allows you to change the order in which buffers are shown in each
 tab. To do so, use the following `<Plug>` mappings:
 
-`<Plug>vem_move_buffer_left-`: Move selected buffer to the left
-`<Plug>vem_move_buffer_right-`: Move selected buffer to the right
+* `<Plug>vem_move_buffer_left-`: Move selected buffer to the left
+* `<Plug>vem_move_buffer_right-`: Move selected buffer to the right
 
 Vim doesn't support ordering buffers natively so if you use `:bnext` and
 `:bprev`, they will not follow the order of buffers in the tabline if you have
 modified it. To avoid this problem you can use the following mappings:
 
-`<Plug>vem_prev_buffer-`: Select previous buffer in tabline
-`<Plug>vem_next_buffer-`: Select next buffer in tabline
+* `<Plug>vem_prev_buffer-`: Select previous buffer in tabline
+* `<Plug>vem_next_buffer-`: Select next buffer in tabline
 
 For example you could set your mappings like:
 ```
