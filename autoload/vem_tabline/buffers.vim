@@ -138,6 +138,9 @@ function! vem_tabline#buffers#section.generate_labels_without_tagnr() abort
             let dirname = buffer_item.path_parts[buffer_item.path_index]
             let buffer_item.discriminator = g:vem_tabline_location_symbol . dirname
         endif
+        if exists('*WebDevIconsGetFileTypeSymbol')  " support for vim-devicons
+            let buffer_item.discriminator .= ' ' . WebDevIconsGetFileTypeSymbol(buffer_item.name)
+        endif
 
         " get flags
         if buffer_item.modified
