@@ -9,7 +9,7 @@
 "
 " Definitions:
 "
-" label = tagnr + buffer_name + discriminator + flags
+" label = icon + tagnr + buffer_name + discriminator + flags
 "
 
 " Due to a bug in Vim dictionary functions don't trigger script autoload
@@ -74,7 +74,8 @@ function! vem_tabline#buffers#section.populate_buffers(buffer_nrs) abort
         " index of the last element in path_part to be included in the label
         let buffer_item.path_index = 0
 
-        " label parts: <tagnr><name><discriminator><flags>
+        " label parts: <icon><tagnr><name><discriminator><flags>
+        let buffer_item.icon = ''
         let buffer_item.tagnr = ''
         let buffer_item.name = ''
         let buffer_item.discriminator = ''
@@ -132,14 +133,16 @@ function! vem_tabline#buffers#section.generate_labels_without_tagnr() abort
         " get name
         let buffer_item.name = buffer_item.path_parts[0]
 
+        " get icon (support for vim-devicons)
+        if exists('*WebDevIconsGetFileTypeSymbol')
+            let buffer_item.icon = WebDevIconsGetFileTypeSymbol(buffer_item.name) . ' '
+        endif
+
         " get discriminator
         if buffer_item.path_index != 0
             let filename = buffer_item.path_parts[0]
             let dirname = buffer_item.path_parts[buffer_item.path_index]
             let buffer_item.discriminator = g:vem_tabline_location_symbol . dirname
-        endif
-        if exists('*WebDevIconsGetFileTypeSymbol')  " support for vim-devicons
-            let buffer_item.discriminator .= ' ' . WebDevIconsGetFileTypeSymbol(buffer_item.name)
         endif
 
         " get flags
@@ -318,12 +321,19 @@ function! vem_tabline#buffers#section.get_tabline() abort
 
 endfunction
 
+" Return a string to fill up self.left_padding characters of the tabline to
+" the left. The returned string is created with the filename to the left of
+" the tabline and has the format:
+" <partial-filename> or ....<full-filename>
+" where the period characters fill up when the filename is not long enough
 function! vem_tabline#buffers#section.get_left_padding() abort
     try
         let item = self.buffer_items[self.start_index - 1]
         let label = item.get_label()
-        let padding = label[-self.left_padding:]
-        let padding = repeat('.', self.left_padding - len(padding)) . padding
+        let label_length = strchars(label)
+        let dot_count = max([0, self.left_padding - label_length])
+        let full_padding = repeat('.', dot_count) . label
+        let padding = strcharpart(full_padding, strchars(full_padding) - self.left_padding)
         return padding
     catch //
         return repeat('.', self.left_padding)
@@ -334,7 +344,7 @@ function! vem_tabline#buffers#section.get_right_padding() abort
     try
         let item = self.buffer_items[self.end_index + 1]
         let label = item.get_label()
-        let padding = label[0:self.right_padding - 1]
+        let padding = strcharpart(label, 0, self.right_padding)
         return padding
     catch //
         return repeat('.', self.right_padding)
@@ -384,11 +394,11 @@ let vem_tabline#buffers#buffer_item = {}
 " get the length of a single buffer label
 function! vem_tabline#buffers#buffer_item.get_length(tagnr) abort
     let margin = 2
-    return len(a:tagnr) + len(self.name) + len(self.discriminator) + len(self.flags) + margin
+    return strchars(self.icon) + strchars(a:tagnr) + strchars(self.name) + strchars(self.discriminator) + strchars(self.flags) + margin
 endfunction
 
 function! vem_tabline#buffers#buffer_item.get_label() abort
-    return ' ' . self.tagnr . self.name . self.discriminator . self.flags . ' '
+    return ' ' . self.icon . self.tagnr . self.name . self.discriminator . self.flags . ' '
 endfunction
 
 function! vem_tabline#buffers#buffer_item.get_tagnr(index) abort
@@ -415,6 +425,7 @@ endfunction
 
 function! vem_tabline#buffers#buffer_item.render(modifier) abort
     let label = ' '
+    let label .= self.icon
     if self.tagnr != ''
         let label .= '%#VemTablineNumber' . a:modifier . '#'
         let label .= self.tagnr

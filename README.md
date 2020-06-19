@@ -26,6 +26,8 @@ Features
 
 * Mouse support for clicking on both buffers (only Neovim) and tabpage numbers.
 
+* Integration with vim-devicons to show file type icons
+
 * Lightweight, performant and just focused on providing the tabline
   functionality.
 
@@ -148,6 +150,18 @@ arrange windows in different configurations.
 
 To enable this mode, set `g:vem_tabline_multiwindow_mode` to 1 in your `vimrc`.
 See [Configuration](#configuration) for more information.
+
+
+Filetype icons
+--------------
+
+Vem Tabline integrates with the
+[vim-devicons](https://github.com/ryanoasis/vim-devicons) plugin to show, next
+to each filename, an icon that displays its file type.
+
+By default, once the plugin is installed, the file type icons will be displayed
+automatically. You can prevent this behavior by adding:
+`let g:vem_tabline_show_icon = 0` to your `vimrc` file.
 
 
 Color Scheme

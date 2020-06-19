@@ -11,6 +11,7 @@ CONTENTS                                                           *vem-tabline*
         Deleting buffers ...................... |vem-tabline-deleting-buffers|
         Multiwindow mode ...................... |vem-tabline-multiwindow-mode|
         Colors ................................ |vem-tabline-colors|
+        Filetype icons ........................ |vem-tabline-filetype-icons|
         Settings .............................. |vem-tabline-settings|
         Source ................................ |vem-tabline-source|
 
@@ -218,6 +219,22 @@ And this is a complete example for a grey colored tabline:
     highlight VemTablineTabSelected      term=bold    cterm=bold ctermfg=0   ctermbg=255 guifg=#242424 guibg=#ffffff gui=bold
 <
 ==============================================================================
+FILETYPE ICONS                                      *vem-tabline-filetype-icons*
+
+Vem Tabline integrates with the vim-devicons plugin to show, next to each
+filename, an icon that displays its file type.
+
+You can get vim-devicons at:
+
+https://github.com/ryanoasis/vim-devicons
+
+By default, once the plugin is installed, the file type icons will be
+displayed automatically. To prevent that behavior can add this to your |vimrc|
+file:
+>
+    let g:vem_tabline_show_icon = 0
+<
+==============================================================================
 SETTINGS                                                  *vem-tabline-settings*
 
 You can set these variables to configure Vem Tabline in your |vimrc| file:
@@ -254,6 +271,14 @@ You can set these variables to configure Vem Tabline in your |vimrc| file:
         index: displayed buffers are numbered sequentially starting from 1
 
     See |vem-tabline-selecting-buffers| for more info.
+
+*g:vem_tabline_show_icon*         boolean (default: 1)
+
+    Show an icon next to each buffer displaying its file type.
+
+    It requires the vim-devicons plugin to be installed.
+
+    See |vem-tabline-filetype-icons| for more info.
 
 *g:vem_tabline_number_symbol*     string (default: :)
 

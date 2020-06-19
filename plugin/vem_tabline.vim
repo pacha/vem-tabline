@@ -13,8 +13,9 @@ scriptencoding utf-8
 
 " Configuration variables
 let g:vem_tabline_show = get(g:, 'vem_tabline_show', 1)
+let g:vem_tabline_show_icon = get(g:, 'vem_tabline_show_icon', 1)
 let g:vem_tabline_show_number = get(g:, 'vem_tabline_show_number', 'none')
-let g:vem_tabline_number_symbol = get(g:, 'vem_tabline_location_symbol', ':')
+let g:vem_tabline_number_symbol = get(g:, 'vem_tabline_number_symbol', ':')
 let g:vem_tabline_multiwindow_mode = get(g:, 'vem_tabline_multiwindow_mode', 0)
 let g:vem_tabline_location_symbol = get(g:, 'vem_tabline_location_symbol', '@')
 if has('gui_running')
