@@ -116,7 +116,7 @@ function! vem_tabline#buffers#section.generate_labels_without_tagnr() abort
 
         " empty name
         if path_parts_count == 0
-            let buffer_item.name = '[No Name]'
+            let buffer_item.name = g:vem_unnamed_buffer_label
             continue
         endif
 

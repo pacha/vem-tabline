@@ -295,10 +295,15 @@ You can set these variables to configure Vem Tabline in your |vimrc| file:
     Symbol to use when there are more buffers to the left of the tabline than
     the ones that fit in it.
 
-*g:vem_tabline_right_arrow*          string (default: > in terminal, ▶ in gui)
+*g:vem_tabline_right_arrow*         string (default: > in terminal, ▶ in gui)
 
     Symbol to use when there are more buffers to the right of the tabline than
     the ones that fit in it.
+
+*g:vem_unnamed_buffer_label*        string (default: [No Name])
+
+    Label to use for new, unnamed buffers that are not associated to a file
+    yet.
 
 ==============================================================================
 SOURCE                                                      *vem-tabline-source*

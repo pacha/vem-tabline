@@ -25,6 +25,7 @@ else
     let g:vem_tabline_left_arrow = get(g:, 'vem_tabline_left_arrow', '<')
     let g:vem_tabline_right_arrow = get(g:, 'vem_tabline_right_arrow', '>')
 endif
+let g:vem_unnamed_buffer_label = get(g:, 'vem_unnamed_buffer_label', '[No Name]')
 
 " Syntax highlighting
 highlight default link VemTablineNormal TabLine
