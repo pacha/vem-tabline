@@ -134,7 +134,7 @@ function! vem_tabline#buffers#section.generate_labels_without_tagnr() abort
         let buffer_item.name = buffer_item.path_parts[0]
 
         " get icon (support for vim-devicons)
-        if exists('*WebDevIconsGetFileTypeSymbol')
+        if exists('*WebDevIconsGetFileTypeSymbol') && g:vem_tabline_show_icon
             let buffer_item.icon = WebDevIconsGetFileTypeSymbol(buffer_item.name) . ' '
         endif
 
