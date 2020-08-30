@@ -142,18 +142,35 @@ function! vem_tabline#tabline.get_replacement_buffer() abort
     " get buffer position
     let bufnum = bufnr('%')
     let bufnum_pos = index(self.tabline_buffers, bufnum)
+    let num_buffers = len(self.tabline_buffers)
 
-    " check if current buffer is not in the tabline
-    if bufnum_pos == -1
+    " check if current buffer is not in the tabline or it is the last one
+    if bufnum_pos == -1 || num_buffers < 2
         return 0
     endif
 
     " get replacement buffer position
-    let next_pos = bufnum_pos + 1 < len(self.tabline_buffers) ? bufnum_pos + 1 : bufnum_pos - 1
+    let next_pos = bufnum_pos + 1 < num_buffers ? bufnum_pos + 1 : bufnum_pos - 1
 
     " get replacement buffer number
     let next_buf = self.tabline_buffers[next_pos]
     return next_buf
+endfunction
+
+" Delete current buffer and select next one in tabline as the current one
+" (You can delete a buffer with Vim commands but the next buffer selected will
+" not follow the order in the tabline).
+function! vem_tabline#tabline.delete_buffer() abort
+    let current_buffer = bufnr('%')
+    let next_buffer = self.get_replacement_buffer()
+    try
+        exec 'confirm ' . current_buffer . 'bdelete'
+        if next_buffer != 0
+            exec next_buffer . 'buffer'
+        endif
+    catch /E516:/
+       " If the operation is cancelled, do nothing
+    endtry
 endfunction
 
 " Get next/prev buffer in list (according to the stored sorting)

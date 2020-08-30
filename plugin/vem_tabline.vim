@@ -89,6 +89,9 @@ map <silent> <Plug>vem_move_buffer_left- :<C-u>call vem_tabline#tabline.move_buf
 " move buffer to the right
 map <silent> <Plug>vem_move_buffer_right- :<C-u>call vem_tabline#tabline.move_buffer('right')<CR>
 
+" delete buffer
+map <silent> <Plug>vem_delete_buffer- :<C-u>call vem_tabline#tabline.delete_buffer()<CR>
+
 " Autocommands
 augroup VemTabLine
     autocmd!

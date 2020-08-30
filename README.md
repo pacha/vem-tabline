@@ -74,6 +74,23 @@ nmap <leader>l <Plug>vem_move_buffer_right-
 nmap <leader>p <Plug>vem_prev_buffer-
 nmap <leader>n <Plug>vem_next_buffer-
 ```
+Where leader is typically set to `\` in Vim.
+
+### Deleting Buffers
+
+You can use any Vim command to delete or wipeout your buffers. However, if you
+have reordered them, you'll notice that the next buffer to be displayed is not
+the next in the tabline, which is not very intuitive. This is because Vim
+chooses the next buffer to display from its internal buffer list and not from
+the tabline reordered one. If you want to delete a buffer and get the next one
+in the tabline selected, use the following keymap:
+```
+nmap <leader>x <Plug>vem_delete_buffer-
+```
+If the current buffer has unsaved changes, you'll be prompted to confirm.
+
+Quick access to tabs
+--------------------
 
 You may also want to map the numbered keys to quickly access your tabs. To do
 so, use the following key mappings:
@@ -88,40 +105,6 @@ nnoremap <leader>7 :7tabnext<CR>
 nnoremap <leader>8 :8tabnext<CR>
 nnoremap <leader>9 :9tabnext<CR>
 ```
-
-Deleting Buffers
-----------------
-
-If you reorder the buffers in the tabline and then you delete one of them, Vim
-will choose a new buffer to display instead. This will usually be the next
-buffer in Vim's jump list and not necessarily the next one in the tabline. If
-you delete several of them in a row, you don't really know which buffer will be
-selected in the tabline and the resulting effect looks a bit random.
-
-If you want to have the next buffer in the tabline to be selected when you
-delete the current one, you can add something like this to your `vimrc`:
-```
-function! DeleteCurrentBuffer() abort
-    let current_buffer = bufnr('%')
-    let next_buffer = g:vem_tabline#tabline.get_replacement_buffer()
-    try
-        exec 'confirm ' . current_buffer . 'bdelete'
-        if next_buffer != 0
-            exec next_buffer . 'buffer'
-        endif
-    catch /E516:/
-       " If the operation is cancelled, do nothing
-    endtry
-endfunction
-nmap <leader>x :call DeleteCurrentBuffer()<CR>
-```
-With this, you can press `<leader>x` (typically `\x`), and the current buffer
-will be deleted, and the next one in the tabline selected. If the current
-buffer has unsaved changes, you'll be prompted to confirm.
-
-Of course, you can adapt the snippet to your needs (like using `bwipeout`
-instead of `bdelete`) or choose a different key mapping.
-
 
 Filetype icons
 --------------
