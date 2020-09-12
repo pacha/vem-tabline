@@ -64,8 +64,6 @@ function! VemTablineGo(tagnr) abort
     try
         let buffnr = g:vem_tabline#buffers#section.tagnr_map[a:tagnr . g:vem_tabline_number_symbol]
         exec 'buffer' . buffnr
-    catch /E716:/
-        exec 'buffer ' . a:tagnr
     catch //
         echoerr "VemTabline: Buffer " . a:tagnr . " does not exist"
     endtry
