@@ -67,7 +67,7 @@ As shown in |vem-tabline-buffer-order|, you can use the mappings:
     <Plug>vem_prev_buffer-
     <Plug>vem_next_buffer-
 <
-to select the the next or previous buffer according to the order in which they
+to select the next or previous buffer according to the order in which they
 are displayed in the tabline.
 
 With the variable `g:vem_tabline_show_number`, you can also display a number
@@ -114,7 +114,7 @@ can use any name of your liking here, but remember that Vim user commands must
 start with uppercase.
 
 ==============================================================================
-DELETING BUFFERS                                 *vem-tabline-deleting-bufffers*
+DELETING BUFFERS                                 *vem-tabline-deleting-buffers*
 
 If you reorder the buffers in the tabline and then you delete one of them, Vim
 will choose a new buffer to display instead. This will usually be the next
