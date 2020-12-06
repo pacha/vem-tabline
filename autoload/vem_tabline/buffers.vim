@@ -291,19 +291,30 @@ function! vem_tabline#buffers#section.get_tabline() abort
         let last_one = buffer_index == buffer_range[-1]
 
         " label
-        if buffer_item.current
+        if buffer_item.current && buffer_item.modified
+            let section .= '%#VemTablineSelectedModified# '
+            let section .= buffer_item.render('SelectedModified')
+        elseif buffer_item.current
             let section .= '%#VemTablineSelected# '
             let section .= buffer_item.render('Selected')
+        elseif buffer_item.shown && buffer_item.modified
+            let section .= ' %#VemTablineShownModified#'
+            let section .= buffer_item.render('ShownModified')
         elseif buffer_item.shown
             let section .= ' %#VemTablineShown#'
             let section .= buffer_item.render('Shown')
+        elseif buffer_item.modified
+            let section .= ' %#VemTablineModified#'
+            let section .= buffer_item.render('Modified')
         else
             let section .= ' %#VemTablineNormal#'
             let section .= buffer_item.render('')
         endif
 
         " last right label margin
-        if last_one
+        if last_one && buffer_item.modified
+            let section .= ' %#VemTablineModified#'
+        elseif last_one
             let section .= ' %#VemTablineNormal#'
         endif
     endfor
