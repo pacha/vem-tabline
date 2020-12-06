@@ -42,6 +42,15 @@ highlight default link VemTablineSeparator TabLineFill
 highlight default link VemTablineTabNormal TabLineFill
 highlight default link VemTablineTabSelected TabLineSel
 highlight default link VemTabline VemTablineNormal
+highlight default link VemTablineModified TabLine
+highlight default link VemTablineNumberModified TabLine
+highlight default link VemTablineSelectedModified TabLineSel
+highlight default link VemTablineNumberSelectedModified TabLineSel
+highlight default link VemTablineLocationModified VemTablineModified
+highlight default link VemTablineLocationSelectedModified VemTablineSelectedModified
+highlight default link VemTablineShownModified VemTablineModified
+highlight default link VemTablineNumberShownModified VemTablineModified
+highlight default link VemTablineLocationShownModified VemTablineModified
 
 " Functions
 

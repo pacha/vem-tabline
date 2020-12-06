@@ -139,6 +139,8 @@ VemTablineSeparator        | TabLineFill | '+X more' text
 VemTablinePartialName      | TabLine     | Partially displayed buffer at the edge of the tabline
 VemTablineTabSelected      | TabLineSel  | Selected tab
 VemTablineTabNormal        | TabLineFill | Non selected tab
+VemTablineModified         | TabLineFill | Non-selected modified buffers
+VemTablineSelectedModified | TabLineSel  | Currently selected modified buffer
 
 For example, with the following code you can configure your tabline colors using
 different shades of grey:
